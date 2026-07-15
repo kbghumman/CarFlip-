@@ -5,14 +5,13 @@ import type {
   TimelineEvent,
 } from "../types";
 
+import { syncAppStateToCloud } from "./cloudStorage";
+
 const CARS_STORAGE_KEY = "cars";
 const INVESTORS_STORAGE_KEY = "investors";
 
 function createSafeId() {
-  return (
-    Date.now() +
-    Math.floor(Math.random() * 100000)
-  );
+  return Date.now() + Math.floor(Math.random() * 100000);
 }
 
 function normalizeExpense(
@@ -69,17 +68,14 @@ function normalizeTimelineEvent(
 
 export function loadCars(): Car[] {
   const savedCars =
-    localStorage.getItem(
-      CARS_STORAGE_KEY
-    );
+    localStorage.getItem(CARS_STORAGE_KEY);
 
   if (!savedCars) {
     return [];
   }
 
   try {
-    const parsedCars =
-      JSON.parse(savedCars);
+    const parsedCars = JSON.parse(savedCars);
 
     if (!Array.isArray(parsedCars)) {
       return [];
@@ -219,6 +215,8 @@ export function saveCars(
       CARS_STORAGE_KEY,
       JSON.stringify(cars)
     );
+
+    void syncAppStateToCloud();
   } catch (error) {
     console.error(
       "Could not save cars:",
@@ -333,6 +331,8 @@ export function saveInvestors(
       INVESTORS_STORAGE_KEY,
       JSON.stringify(investors)
     );
+
+    void syncAppStateToCloud();
   } catch (error) {
     console.error(
       "Could not save investors:",
