@@ -201,66 +201,24 @@ export default function InventoryPage() {
     ownershipFilter,
   ]);
 
-  const inputStyle = {
-    width: "100%",
-    boxSizing: "border-box" as const,
-    padding: 11,
-    border: "1px solid #d1d5db",
-    borderRadius: 8,
-    fontSize: 15,
-  };
-
-  const buttonStyle = {
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 15px",
-    cursor: "pointer",
-    fontWeight: 700,
-    color: "white",
-  };
-
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: 16,
-          flexWrap: "wrap",
-          marginBottom: 25,
-        }}
-      >
+      <div className="cf-page-head">
         <div>
-          <h1
-            style={{
-              marginTop: 0,
-              marginBottom: 5,
-            }}
-          >
-            Inventory
-          </h1>
-
-          <p
-            style={{
-              margin: 0,
-              color: "#6b7280",
-            }}
-          >
-            Manage vehicles, ownership, funding,
-            expenses and profit
-          </p>
+          <div className="cf-eyebrow">Inventory</div>
+          <h1>Vehicles</h1>
+          <p>Manage vehicles, ownership, funding, expenses and profit</p>
         </div>
 
         <button
           type="button"
           onClick={startAddingCar}
-          style={{
-            ...buttonStyle,
-            background: "#16a34a",
-          }}
+          className="cf-btn cf-btn-primary"
         >
-          + Add Vehicle
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Add Vehicle
         </button>
       </div>
 
@@ -286,19 +244,8 @@ export default function InventoryPage() {
         </div>
       )}
 
-      <section
-        style={{
-          background: "white",
-          border: "1px solid #e5e7eb",
-          borderRadius: 14,
-          padding: 20,
-          boxShadow: "0 4px 14px rgba(0,0,0,0.07)",
-          marginBottom: 28,
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>
-          Search and Filters
-        </h2>
+      <section className="cf-panel" style={{ marginBottom: 28 }}>
+        <h2 style={{ marginBottom: 14 }}>Search and Filters</h2>
 
         <div style={{ marginBottom: 14 }}>
           <input
@@ -307,18 +254,11 @@ export default function InventoryPage() {
               setSearchTerm(event.target.value)
             }
             placeholder="Search by make, model or year"
-            style={inputStyle}
+            className="cf-input"
           />
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(190px, 1fr))",
-            gap: 12,
-          }}
-        >
+        <div className="cf-grid cf-grid-auto-sm">
           <select
             value={statusFilter}
             onChange={(event) =>
@@ -326,23 +266,13 @@ export default function InventoryPage() {
                 event.target.value as StatusFilter
               )
             }
-            style={inputStyle}
+            className="cf-select"
           >
-            <option value="All">
-              All inventory statuses
-            </option>
-            <option value="In Stock">
-              In Stock
-            </option>
-            <option value="Reserved">
-              Reserved
-            </option>
-            <option value="Shipping">
-              Shipping
-            </option>
-            <option value="Sold">
-              Sold
-            </option>
+            <option value="All">All inventory statuses</option>
+            <option value="In Stock">In Stock</option>
+            <option value="Reserved">Reserved</option>
+            <option value="Shipping">Shipping</option>
+            <option value="Sold">Sold</option>
           </select>
 
           <select
@@ -352,20 +282,12 @@ export default function InventoryPage() {
                 event.target.value as BusinessFilter
               )
             }
-            style={inputStyle}
+            className="cf-select"
           >
-            <option value="All">
-              All business types
-            </option>
-            <option value="Not decided">
-              Not decided
-            </option>
-            <option value="Local">
-              Local Trading
-            </option>
-            <option value="Export">
-              Export Trading
-            </option>
+            <option value="All">All business types</option>
+            <option value="Not decided">Not decided</option>
+            <option value="Local">Local Trading</option>
+            <option value="Export">Export Trading</option>
           </select>
 
           <select
@@ -375,42 +297,23 @@ export default function InventoryPage() {
                 event.target.value as OwnershipFilter
               )
             }
-            style={inputStyle}
+            className="cf-select"
           >
-            <option value="All">
-              All ownership types
-            </option>
-            <option value="Mine Only">
-              Mine Only
-            </option>
-            <option value="Me + Partner">
-              Me + Partner
-            </option>
+            <option value="All">All ownership types</option>
+            <option value="Mine Only">Mine Only</option>
+            <option value="Me + Partner">Me + Partner</option>
           </select>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 12,
-            flexWrap: "wrap",
-            marginTop: 16,
-          }}
-        >
-          <span style={{ color: "#6b7280" }}>
-            Showing {filteredCars.length} of{" "}
-            {cars.length} vehicles
+        <div className="cf-flex-between" style={{ marginTop: 16 }}>
+          <span className="cf-muted">
+            Showing {filteredCars.length} of {cars.length} vehicles
           </span>
 
           <button
             type="button"
             onClick={clearFilters}
-            style={{
-              ...buttonStyle,
-              background: "#6b7280",
-            }}
+            className="cf-btn cf-btn-ghost cf-btn-sm"
           >
             Clear Filters
           </button>
@@ -418,36 +321,18 @@ export default function InventoryPage() {
       </section>
 
       <section>
-        <h2>Vehicle List</h2>
+        <h2 style={{ marginBottom: 16 }}>Vehicle List</h2>
 
         {cars.length === 0 && (
-          <div
-            style={{
-              background: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: 12,
-              padding: 25,
-              color: "#6b7280",
-              textAlign: "center",
-            }}
-          >
+          <div className="cf-empty">
             No vehicles have been added yet.
           </div>
         )}
 
         {cars.length > 0 &&
           filteredCars.length === 0 && (
-            <div
-              style={{
-                background: "#fef3c7",
-                border: "1px solid #fde68a",
-                color: "#92400e",
-                borderRadius: 12,
-                padding: 18,
-              }}
-            >
-              No vehicles match the current search
-              and filters.
+            <div className="cf-callout cf-callout-amber">
+              No vehicles match the current search and filters.
             </div>
           )}
 

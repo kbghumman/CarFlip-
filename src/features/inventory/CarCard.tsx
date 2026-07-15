@@ -34,59 +34,34 @@ function formatDate(date: string) {
   ).toLocaleDateString();
 }
 
-function getStatusColors(status: Car["status"]) {
+function getStatusBadgeClass(status: Car["status"]) {
   if (status === "Sold") {
-    return {
-      background: "#dcfce7",
-      color: "#166534",
-      dot: "#16a34a",
-    };
+    return "cf-badge cf-badge-green";
   }
 
   if (status === "Shipping") {
-    return {
-      background: "#ffedd5",
-      color: "#9a3412",
-      dot: "#ea580c",
-    };
+    return "cf-badge cf-badge-orange";
   }
 
   if (status === "Reserved") {
-    return {
-      background: "#fef3c7",
-      color: "#92400e",
-      dot: "#ca8a04",
-    };
+    return "cf-badge cf-badge-amber";
   }
 
-  return {
-    background: "#dbeafe",
-    color: "#1e40af",
-    dot: "#2563eb",
-  };
+  return "cf-badge cf-badge-blue";
 }
 
-function getFundingColors(
+function getFundingBadgeClass(
   fundingStatus: Car["fundingStatus"]
 ) {
   if (fundingStatus === "Closed") {
-    return {
-      background: "#dcfce7",
-      color: "#166534",
-    };
+    return "cf-badge cf-badge-green";
   }
 
   if (fundingStatus === "Allocated") {
-    return {
-      background: "#ede9fe",
-      color: "#5b21b6",
-    };
+    return "cf-badge cf-badge-violet";
   }
 
-  return {
-    background: "#f3f4f6",
-    color: "#4b5563",
-  };
+  return "cf-badge cf-badge-slate";
 }
 
 export default function CarCard({
@@ -122,39 +97,6 @@ export default function CarCard({
     hasSale && totalCost > 0
       ? (netProfit / totalCost) * 100
       : 0;
-
-  const statusColors =
-    getStatusColors(car.status);
-
-  const fundingColors =
-    getFundingColors(
-      car.fundingStatus
-    );
-
-  const buttonStyle = {
-    color: "white",
-    border: "none",
-    padding: "9px 13px",
-    borderRadius: 8,
-    cursor: "pointer",
-    fontWeight: 700,
-  };
-
-  const summaryBoxStyle = {
-    background: "#f9fafb",
-    border: "1px solid #e5e7eb",
-    borderRadius: 10,
-    padding: 15,
-  };
-
-  const smallLabelStyle = {
-    color: "#6b7280",
-    fontSize: 12,
-    fontWeight: 800,
-    letterSpacing: 0.8,
-    textTransform: "uppercase" as const,
-    marginBottom: 7,
-  };
 
   function handleDelete() {
     const confirmed = window.confirm(
@@ -196,82 +138,23 @@ export default function CarCard({
 
   return (
     <article
-      style={{
-        background: "white",
-        border: "1px solid #e5e7eb",
-        borderRadius: 15,
-        marginBottom: 20,
-        boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-        overflow: "hidden",
-      }}
+      className="cf-card"
+      style={{ marginBottom: 20, overflow: "hidden" }}
     >
-      <div style={{ padding: 22 }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: 18,
-            flexWrap: "wrap",
-          }}
-        >
-          <div
-            style={{
-              flex: 1,
-              minWidth: 240,
-            }}
-          >
-            <h2
-              style={{
-                marginTop: 0,
-                marginBottom: 10,
-              }}
-            >
+      <div className="cf-card-pad">
+        <div className="cf-flex-between" style={{ alignItems: "flex-start" }}>
+          <div style={{ flex: 1, minWidth: 240 }}>
+            <h2 style={{ marginBottom: 12 }}>
               {car.year} {car.make} {car.model}
             </h2>
 
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                flexWrap: "wrap",
-              }}
-            >
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 7,
-                  background: statusColors.background,
-                  color: statusColors.color,
-                  borderRadius: 20,
-                  padding: "6px 11px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                }}
-              >
-                <span
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: statusColors.dot,
-                  }}
-                />
-
+            <div className="cf-flex" style={{ gap: 8 }}>
+              <span className={getStatusBadgeClass(car.status)}>
+                <span className="cf-dot" />
                 {car.status}
               </span>
 
-              <span
-                style={{
-                  background: "#f3f4f6",
-                  color: "#374151",
-                  borderRadius: 20,
-                  padding: "6px 11px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                }}
-              >
+              <span className="cf-badge cf-badge-slate">
                 {car.saleType === "Local"
                   ? "Local Trading"
                   : car.saleType === "Export"
@@ -280,61 +163,29 @@ export default function CarCard({
               </span>
 
               <span
-                style={{
-                  background:
-                    car.ownership === "Mine Only"
-                      ? "#e0f2fe"
-                      : "#fff7ed",
-                  color:
-                    car.ownership === "Mine Only"
-                      ? "#075985"
-                      : "#9a3412",
-                  borderRadius: 20,
-                  padding: "6px 11px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                }}
+                className={
+                  "cf-badge " +
+                  (car.ownership === "Mine Only"
+                    ? "cf-badge-sky"
+                    : "cf-badge-orange")
+                }
               >
                 {car.ownership}
               </span>
 
-              <span
-                style={{
-                  background: fundingColors.background,
-                  color: fundingColors.color,
-                  borderRadius: 20,
-                  padding: "6px 11px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                }}
-              >
+              <span className={getFundingBadgeClass(car.fundingStatus)}>
                 Funding: {car.fundingStatus}
               </span>
 
               {investor && (
-                <span
-                  style={{
-                    background: "#ede9fe",
-                    color: "#5b21b6",
-                    borderRadius: 20,
-                    padding: "6px 11px",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
+                <span className="cf-badge cf-badge-violet">
                   Investor: {investor.name}
                 </span>
               )}
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="cf-actions">
             <button
               type="button"
               onClick={() =>
@@ -342,25 +193,15 @@ export default function CarCard({
                   (current) => !current
                 )
               }
-              style={{
-                ...buttonStyle,
-                background: "#111827",
-              }}
+              className="cf-btn cf-btn-dark cf-btn-sm"
             >
-              {showDetails
-                ? "Hide Details"
-                : "View Details"}
+              {showDetails ? "Hide Details" : "View Details"}
             </button>
 
             <button
               type="button"
-              onClick={() =>
-                onManageExpenses(car)
-              }
-              style={{
-                ...buttonStyle,
-                background: "#7c3aed",
-              }}
+              onClick={() => onManageExpenses(car)}
+              className="cf-btn cf-btn-accent cf-btn-sm"
             >
               Expenses
             </button>
@@ -368,10 +209,7 @@ export default function CarCard({
             <button
               type="button"
               onClick={() => onEdit(car)}
-              style={{
-                ...buttonStyle,
-                background: "#2563eb",
-              }}
+              className="cf-btn cf-btn-primary cf-btn-sm"
             >
               Edit
             </button>
@@ -379,10 +217,7 @@ export default function CarCard({
             <button
               type="button"
               onClick={handleDelete}
-              style={{
-                ...buttonStyle,
-                background: "#dc2626",
-              }}
+              className="cf-btn cf-btn-danger cf-btn-sm"
             >
               Delete
             </button>
@@ -390,115 +225,70 @@ export default function CarCard({
         </div>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: 14,
-            marginTop: 22,
-          }}
+          className="cf-grid cf-grid-auto-sm"
+          style={{ marginTop: 22 }}
         >
-          <div style={summaryBoxStyle}>
-            <div style={smallLabelStyle}>
-              Total Cost
-            </div>
-
-            <strong
-              style={{
-                display: "block",
-                fontSize: 22,
-              }}
-            >
+          <div className="cf-inset">
+            <div className="cf-mini-label">Total Cost</div>
+            <strong className="num" style={{ fontSize: "1.35rem" }}>
               {formatYen(totalCost)}
             </strong>
           </div>
 
-          <div style={summaryBoxStyle}>
-            <div style={smallLabelStyle}>
-              Expenses
-            </div>
-
-            <strong
-              style={{
-                display: "block",
-                fontSize: 22,
-              }}
-            >
+          <div className="cf-inset">
+            <div className="cf-mini-label">Expenses</div>
+            <strong className="num" style={{ fontSize: "1.35rem" }}>
               {formatYen(expenseTotal)}
             </strong>
-
-            <div
-              style={{
-                color: "#6b7280",
-                marginTop: 5,
-                fontSize: 14,
-              }}
-            >
+            <div className="cf-muted" style={{ marginTop: 5, fontSize: "0.85rem" }}>
               {car.expenses.length}{" "}
-              {car.expenses.length === 1
-                ? "item"
-                : "items"}
+              {car.expenses.length === 1 ? "item" : "items"}
             </div>
           </div>
 
-          <div style={summaryBoxStyle}>
-            <div style={smallLabelStyle}>
-              Sale Price
-            </div>
-
-            <strong
-              style={{
-                display: "block",
-                fontSize: 22,
-              }}
-            >
-              {hasSale
-                ? formatYen(car.salePrice)
-                : "Awaiting sale"}
+          <div className="cf-inset">
+            <div className="cf-mini-label">Sale Price</div>
+            <strong className="num" style={{ fontSize: "1.35rem" }}>
+              {hasSale ? formatYen(car.salePrice) : "Awaiting sale"}
             </strong>
           </div>
 
           <div
+            className="cf-inset"
             style={{
-              ...summaryBoxStyle,
               background: hasSale
                 ? netProfit >= 0
-                  ? "#f0fdf4"
-                  : "#fef2f2"
-                : "#f9fafb",
+                  ? "var(--pos-bg)"
+                  : "var(--neg-bg)"
+                : "var(--surface-2)",
+              borderColor: hasSale
+                ? netProfit >= 0
+                  ? "var(--pos-border)"
+                  : "var(--neg-border)"
+                : "var(--line)",
             }}
           >
-            <div style={smallLabelStyle}>
-              Result
-            </div>
-
+            <div className="cf-mini-label">Result</div>
             <strong
-              style={{
-                display: "block",
-                fontSize: 22,
-                color: hasSale
+              className={
+                "num " +
+                (hasSale
                   ? netProfit >= 0
-                    ? "#16a34a"
-                    : "#dc2626"
-                  : "#6b7280",
-              }}
+                    ? "cf-pos"
+                    : "cf-neg"
+                  : "cf-muted")
+              }
+              style={{ fontSize: "1.35rem" }}
             >
-              {hasSale
-                ? formatYen(netProfit)
-                : "Pending"}
+              {hasSale ? formatYen(netProfit) : "Pending"}
             </strong>
 
             {hasSale && (
               <div
-                style={{
-                  marginTop: 5,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color:
-                    roi >= 0
-                      ? "#166534"
-                      : "#991b1b",
-                }}
+                className={
+                  "num " + (roi >= 0 ? "cf-pos" : "cf-neg")
+                }
+                style={{ marginTop: 5, fontSize: "0.85rem", fontWeight: 700 }}
               >
                 ROI: {roi.toFixed(1)}%
               </div>
@@ -510,73 +300,47 @@ export default function CarCard({
       {showDetails && (
         <div
           style={{
-            background: "#fafafa",
-            borderTop: "1px solid #e5e7eb",
+            background: "var(--surface-2)",
+            borderTop: "1px solid var(--line)",
             padding: 22,
           }}
         >
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(230px, 1fr))",
-              gap: 15,
-              marginBottom: 20,
-            }}
+            className="cf-grid cf-grid-auto-lg"
+            style={{ marginBottom: 20 }}
           >
-            <section style={summaryBoxStyle}>
-              <div style={smallLabelStyle}>
-                Important Dates
-              </div>
-
-              <p>
-                <strong>Purchased:</strong>{" "}
-                {formatDate(car.purchaseDate)}
+            <section className="cf-card cf-card-pad">
+              <div className="cf-mini-label">Important Dates</div>
+              <p style={{ marginTop: 4 }}>
+                <strong>Purchased:</strong> {formatDate(car.purchaseDate)}
               </p>
-
-              <p style={{ marginBottom: 0 }}>
-                <strong>Sold:</strong>{" "}
-                {formatDate(car.saleDate)}
+              <p style={{ marginTop: 6 }}>
+                <strong>Sold:</strong> {formatDate(car.saleDate)}
               </p>
             </section>
 
-            <section style={summaryBoxStyle}>
-              <div style={smallLabelStyle}>
-                Auction
-              </div>
-
-              <p>
+            <section className="cf-card cf-card-pad">
+              <div className="cf-mini-label">Auction</div>
+              <p style={{ marginTop: 4 }}>
                 <strong>Bid price:</strong>{" "}
-                {car.bidPrice
-                  ? formatYen(car.bidPrice)
-                  : "Not entered"}
+                {car.bidPrice ? formatYen(car.bidPrice) : "Not entered"}
               </p>
-
-              <p style={{ marginBottom: 0 }}>
+              <p style={{ marginTop: 6 }}>
                 <strong>Final price:</strong>{" "}
                 {car.auctionFinalPrice
-                  ? formatYen(
-                      car.auctionFinalPrice
-                    )
+                  ? formatYen(car.auctionFinalPrice)
                   : "Not entered"}
               </p>
             </section>
 
-            <section style={summaryBoxStyle}>
-              <div style={smallLabelStyle}>
-                Sale
-              </div>
-
-              <p>
+            <section className="cf-card cf-card-pad">
+              <div className="cf-mini-label">Sale</div>
+              <p style={{ marginTop: 4 }}>
                 <strong>Sale price:</strong>{" "}
-                {hasSale
-                  ? formatYen(car.salePrice)
-                  : "Awaiting sale"}
+                {hasSale ? formatYen(car.salePrice) : "Awaiting sale"}
               </p>
-
-              <p style={{ marginBottom: 0 }}>
-                <strong>Status:</strong>{" "}
-                {car.status}
+              <p style={{ marginTop: 6 }}>
+                <strong>Status:</strong> {car.status}
               </p>
             </section>
           </div>
@@ -589,51 +353,23 @@ export default function CarCard({
           {car.investorId !== null &&
             car.fundingStatus === "Allocated" && (
               <div
-                style={{
-                  marginTop: 20,
-                  background: "#ede9fe",
-                  border: "1px solid #c4b5fd",
-                  borderRadius: 11,
-                  padding: 16,
-                }}
+                className="cf-callout cf-callout-accent"
+                style={{ marginTop: 20 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 15,
-                    flexWrap: "wrap",
-                  }}
-                >
+                <div className="cf-flex-between">
                   <div>
-                    <strong
-                      style={{
-                        display: "block",
-                        color: "#5b21b6",
-                      }}
-                    >
+                    <strong style={{ display: "block", color: "var(--accent)" }}>
                       Investor capital is allocated
                     </strong>
-
-                    <span
-                      style={{
-                        color: "#6d28d9",
-                        fontSize: 14,
-                      }}
-                    >
-                      Close the investment after the
-                      vehicle is sold.
+                    <span style={{ fontSize: "0.85rem" }}>
+                      Close the investment after the vehicle is sold.
                     </span>
                   </div>
 
                   <button
                     type="button"
                     onClick={handleCloseInvestment}
-                    style={{
-                      ...buttonStyle,
-                      background: "#16a34a",
-                    }}
+                    className="cf-btn cf-btn-success cf-btn-sm"
                   >
                     Close Investment
                   </button>
@@ -643,19 +379,11 @@ export default function CarCard({
 
           {car.fundingStatus === "Closed" && (
             <div
-              style={{
-                marginTop: 20,
-                background: "#dcfce7",
-                color: "#166534",
-                border: "1px solid #86efac",
-                borderRadius: 11,
-                padding: 16,
-                fontWeight: 700,
-              }}
+              className="cf-callout cf-callout-green"
+              style={{ marginTop: 20, fontWeight: 700 }}
             >
-              Investment closed. The allocated
-              investor capital is no longer tied up
-              in this vehicle.
+              Investment closed. The allocated investor capital is no longer
+              tied up in this vehicle.
             </div>
           )}
         </div>

@@ -762,53 +762,17 @@ export default function Dashboard() {
       0
     );
 
-  const panelStyle = {
-    background: "white",
-    padding: 20,
-    borderRadius: 12,
-    boxShadow:
-      "0 4px 12px rgba(0,0,0,0.08)",
-  };
-
-  const summaryBoxStyle = {
-    background: "#f9fafb",
-    border: "1px solid #e5e7eb",
-    padding: 15,
-    borderRadius: 10,
-  };
-
-  const tableRowStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 20,
-    padding: "11px 0",
-    borderBottom: "1px solid #e5e7eb",
-    flexWrap: "wrap" as const,
-  };
-
   return (
     <div>
-      <h1 style={{ marginBottom: 5 }}>
-        Dashboard
-      </h1>
+      <div className="cf-page-head">
+        <div>
+          <div className="cf-eyebrow">Overview</div>
+          <h1>Dashboard</h1>
+          <p>Financial and operational overview of your trading business</p>
+        </div>
+      </div>
 
-      <p
-        style={{
-          color: "#6b7280",
-          marginTop: 0,
-        }}
-      >
-        Financial and operational overview of MianOS
-      </p>
-
-      <div
-        style={{
-          display: "flex",
-          gap: 20,
-          marginTop: 25,
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="cf-grid cf-grid-auto">
         <StatCard
           title="Cars in Stock"
           value={carsInStock}
@@ -818,7 +782,7 @@ export default function Dashboard() {
         <StatCard
           title="Total Business Cost"
           value={formatYen(totalBusinessCost)}
-          color="#7c3aed"
+          color="#0f172a"
         />
 
         <StatCard
@@ -830,21 +794,13 @@ export default function Dashboard() {
         <StatCard
           title="Total Net Profit"
           value={formatYen(totalNetProfit)}
-          color={
-            totalNetProfit >= 0
-              ? "#16a34a"
-              : "#dc2626"
-          }
+          color={totalNetProfit >= 0 ? "#15803d" : "#dc2626"}
         />
       </div>
 
       <div
-        style={{
-          display: "flex",
-          gap: 20,
-          marginTop: 20,
-          flexWrap: "wrap",
-        }}
+        className="cf-grid cf-grid-auto"
+        style={{ marginTop: 16 }}
       >
         <StatCard
           title="Partner Profit"
@@ -861,7 +817,7 @@ export default function Dashboard() {
         <StatCard
           title="Your Final Profit"
           value={formatYen(totalYourProfit)}
-          color="#16a34a"
+          color="#15803d"
         />
 
         <StatCard
@@ -871,57 +827,25 @@ export default function Dashboard() {
         />
       </div>
 
-      <div
-        style={{
-          ...panelStyle,
-          marginTop: 30,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 15,
-            flexWrap: "wrap",
-          }}
-        >
+      <section className="cf-panel" style={{ marginTop: 28 }}>
+        <div className="cf-flex-between">
           <div>
-            <h2 style={{ margin: 0 }}>
-              Monthly Statistics
-            </h2>
-
-            <p
-              style={{
-                color: "#6b7280",
-                marginBottom: 0,
-              }}
-            >
-              Money moving in and out during the selected
-              month
+            <h2>Monthly Statistics</h2>
+            <p className="cf-muted" style={{ marginTop: 4 }}>
+              Money moving in and out during the selected month
             </p>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: 10,
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="cf-flex">
             <select
+              className="cf-select"
+              style={{ width: "auto" }}
               value={selectedMonth}
               onChange={(event) =>
                 setSelectedMonth(
                   Number(event.target.value)
                 )
               }
-              style={{
-                padding: "10px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: 8,
-                fontWeight: 600,
-              }}
             >
               {monthNames.map((month, index) => (
                 <option key={month} value={index}>
@@ -931,18 +855,14 @@ export default function Dashboard() {
             </select>
 
             <select
+              className="cf-select"
+              style={{ width: "auto" }}
               value={selectedYear}
               onChange={(event) =>
                 setSelectedYear(
                   Number(event.target.value)
                 )
               }
-              style={{
-                padding: "10px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: 8,
-                fontWeight: 600,
-              }}
             >
               {availableYears.map((year) => (
                 <option key={year} value={year}>
@@ -953,113 +873,46 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <h3 style={{ marginTop: 25 }}>
+        <h3 style={{ marginTop: 24, marginBottom: 14 }}>
           {monthNames[selectedMonth]} {selectedYear}
         </h3>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 15,
-          }}
-        >
-          <div
-            style={{
-              ...summaryBoxStyle,
-              background: "#f0fdf4",
-            }}
-          >
-            <div style={{ color: "#6b7280" }}>
-              Total Money In
-            </div>
-
-            <strong
-              style={{
-                display: "block",
-                fontSize: 25,
-                marginTop: 7,
-                color: "#16a34a",
-              }}
-            >
+        <div className="cf-grid cf-grid-auto">
+          <div className="cf-inset">
+            <div className="cf-mini-label">Total Money In</div>
+            <strong className="cf-stat-value num cf-pos">
               {formatYen(monthlyMoneyIn)}
             </strong>
           </div>
 
-          <div
-            style={{
-              ...summaryBoxStyle,
-              background: "#fef2f2",
-            }}
-          >
-            <div style={{ color: "#6b7280" }}>
-              Total Money Out
-            </div>
-
-            <strong
-              style={{
-                display: "block",
-                fontSize: 25,
-                marginTop: 7,
-                color: "#dc2626",
-              }}
-            >
+          <div className="cf-inset">
+            <div className="cf-mini-label">Total Money Out</div>
+            <strong className="cf-stat-value num cf-neg">
               {formatYen(monthlyMoneyOut)}
             </strong>
           </div>
 
-          <div
-            style={{
-              ...summaryBoxStyle,
-              background:
-                monthlyCashMovement >= 0
-                  ? "#eff6ff"
-                  : "#fff7ed",
-            }}
-          >
-            <div style={{ color: "#6b7280" }}>
-              Net Cash Movement
-            </div>
-
+          <div className="cf-inset">
+            <div className="cf-mini-label">Net Cash Movement</div>
             <strong
-              style={{
-                display: "block",
-                fontSize: 25,
-                marginTop: 7,
-                color:
-                  monthlyCashMovement >= 0
-                    ? "#2563eb"
-                    : "#ea580c",
-              }}
+              className={
+                "cf-stat-value num " +
+                (monthlyCashMovement >= 0
+                  ? "cf-brand-text"
+                  : "cf-warn-text")
+              }
             >
               {formatYen(monthlyCashMovement)}
             </strong>
           </div>
 
-          <div
-            style={{
-              ...summaryBoxStyle,
-              background:
-                monthlyNetProfit >= 0
-                  ? "#f0fdf4"
-                  : "#fef2f2",
-            }}
-          >
-            <div style={{ color: "#6b7280" }}>
-              Trading Profit
-            </div>
-
+          <div className="cf-inset">
+            <div className="cf-mini-label">Trading Profit</div>
             <strong
-              style={{
-                display: "block",
-                fontSize: 25,
-                marginTop: 7,
-                color:
-                  monthlyNetProfit >= 0
-                    ? "#16a34a"
-                    : "#dc2626",
-              }}
+              className={
+                "cf-stat-value num " +
+                (monthlyNetProfit >= 0 ? "cf-pos" : "cf-neg")
+              }
             >
               {formatYen(monthlyNetProfit)}
             </strong>
@@ -1067,208 +920,154 @@ export default function Dashboard() {
         </div>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: 20,
-            marginTop: 20,
-          }}
+          className="cf-grid cf-grid-auto-lg"
+          style={{ marginTop: 18 }}
         >
-          <div style={summaryBoxStyle}>
-            <h3 style={{ marginTop: 0 }}>
-              Money Received
-            </h3>
+          <div className="cf-inset">
+            <h3 style={{ marginBottom: 8 }}>Money Received</h3>
 
-            <div style={tableRowStyle}>
+            <div className="cf-datarow">
               <span>Vehicle sales</span>
-              <strong>
+              <strong className="num">
                 {formatYen(monthlyVehicleSales)}
               </strong>
             </div>
 
-            <div style={tableRowStyle}>
+            <div className="cf-datarow">
               <span>Investor deposits</span>
-              <strong>
+              <strong className="num">
                 {formatYen(monthlyInvestorDeposits)}
               </strong>
             </div>
 
-            <div
-              style={{
-                ...tableRowStyle,
-                borderBottom: "none",
-                fontSize: 17,
-              }}
-            >
+            <div className="cf-datarow">
               <strong>Total received</strong>
-              <strong style={{ color: "#16a34a" }}>
+              <strong className="num cf-pos">
                 {formatYen(monthlyMoneyIn)}
               </strong>
             </div>
           </div>
 
-          <div style={summaryBoxStyle}>
-            <h3 style={{ marginTop: 0 }}>
-              Money Paid Out
-            </h3>
+          <div className="cf-inset">
+            <h3 style={{ marginBottom: 8 }}>Money Paid Out</h3>
 
-            <div style={tableRowStyle}>
+            <div className="cf-datarow">
               <span>Vehicle purchases</span>
-              <strong>
+              <strong className="num">
                 {formatYen(monthlyVehiclePurchases)}
               </strong>
             </div>
 
-            <div style={tableRowStyle}>
+            <div className="cf-datarow">
               <span>Vehicle expenses</span>
-              <strong>
+              <strong className="num">
                 {formatYen(monthlyExpenses)}
               </strong>
             </div>
 
-            <div style={tableRowStyle}>
+            <div className="cf-datarow">
               <span>Investor capital returned</span>
-              <strong>
+              <strong className="num">
                 {formatYen(monthlyCapitalReturned)}
               </strong>
             </div>
 
-            <div
-              style={{
-                ...tableRowStyle,
-                borderBottom: "none",
-                fontSize: 17,
-              }}
-            >
+            <div className="cf-datarow">
               <strong>Total paid out</strong>
-              <strong style={{ color: "#dc2626" }}>
+              <strong className="num cf-neg">
                 {formatYen(monthlyMoneyOut)}
               </strong>
             </div>
           </div>
         </div>
 
-        <div
-          style={{
-            ...summaryBoxStyle,
-            marginTop: 20,
-            background: "#fafafa",
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>
+        <div className="cf-inset" style={{ marginTop: 18 }}>
+          <h3 style={{ marginBottom: 8 }}>
             Monthly Profit Distribution
           </h3>
 
-          <div style={tableRowStyle}>
+          <div className="cf-datarow">
             <span>Vehicles sold</span>
-            <strong>{monthlySoldCars.length}</strong>
+            <strong className="num">{monthlySoldCars.length}</strong>
           </div>
 
-          <div style={tableRowStyle}>
+          <div className="cf-datarow">
             <span>Total trading profit</span>
-            <strong>
+            <strong className="num">
               {formatYen(monthlyNetProfit)}
             </strong>
           </div>
 
-          <div style={tableRowStyle}>
-            <span>Business partner’s share</span>
-            <strong>
+          <div className="cf-datarow">
+            <span>Business partner&apos;s share</span>
+            <strong className="num">
               {formatYen(monthlyPartnerProfit)}
             </strong>
           </div>
 
-          <div style={tableRowStyle}>
-            <span>Investors’ combined share</span>
-            <strong>
+          <div className="cf-datarow">
+            <span>Investors&apos; combined share</span>
+            <strong className="num">
               {formatYen(monthlyInvestorProfit)}
             </strong>
           </div>
 
-          <div
-            style={{
-              ...tableRowStyle,
-              borderBottom: "none",
-            }}
-          >
+          <div className="cf-datarow">
             <span>Your final profit</span>
-            <strong style={{ color: "#2563eb" }}>
+            <strong className="num cf-brand-text">
               {formatYen(monthlyYourProfit)}
             </strong>
           </div>
         </div>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: 15,
-            marginTop: 20,
-          }}
+          className="cf-grid cf-grid-auto-lg"
+          style={{ marginTop: 18 }}
         >
-          <div
-            style={{
-              ...summaryBoxStyle,
-              background: "#eff6ff",
-            }}
-          >
-            <h3 style={{ marginTop: 0 }}>
-              Local Trading
-            </h3>
+          <div className="cf-inset">
+            <h3 style={{ marginBottom: 10 }}>Local Trading</h3>
 
-            <p>
-              <strong>Sales:</strong>{" "}
-              {formatYen(monthlyLocalSales)}
-            </p>
-
-            <p>
-              <strong>Profit:</strong>{" "}
-              {formatYen(monthlyLocalProfit)}
-            </p>
+            <div className="cf-datarow">
+              <span>Sales</span>
+              <strong className="num">
+                {formatYen(monthlyLocalSales)}
+              </strong>
+            </div>
+            <div className="cf-datarow">
+              <span>Profit</span>
+              <strong className="num">
+                {formatYen(monthlyLocalProfit)}
+              </strong>
+            </div>
           </div>
 
-          <div
-            style={{
-              ...summaryBoxStyle,
-              background: "#f5f3ff",
-            }}
-          >
-            <h3 style={{ marginTop: 0 }}>
-              Export Trading
-            </h3>
+          <div className="cf-inset">
+            <h3 style={{ marginBottom: 10 }}>Export Trading</h3>
 
-            <p>
-              <strong>Sales:</strong>{" "}
-              {formatYen(monthlyExportSales)}
-            </p>
-
-            <p>
-              <strong>Profit:</strong>{" "}
-              {formatYen(monthlyExportProfit)}
-            </p>
+            <div className="cf-datarow">
+              <span>Sales</span>
+              <strong className="num">
+                {formatYen(monthlyExportSales)}
+              </strong>
+            </div>
+            <div className="cf-datarow">
+              <span>Profit</span>
+              <strong className="num">
+                {formatYen(monthlyExportProfit)}
+              </strong>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div
-        style={{
-          ...panelStyle,
-          marginTop: 30,
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>
-          Profit Distribution by Investor
-        </h2>
-
-        <p style={{ color: "#6b7280" }}>
-          Separate lifetime and selected-month results
-          for every investor
+      <section className="cf-panel" style={{ marginTop: 28 }}>
+        <h2>Profit Distribution by Investor</h2>
+        <p className="cf-muted" style={{ marginTop: 4, marginBottom: 18 }}>
+          Separate lifetime and selected-month results for every investor
         </p>
 
         {investorProfitSummaries.length === 0 ? (
-          <p>No investors have been added yet.</p>
+          <div className="cf-empty">No investors have been added yet.</div>
         ) : (
           investorProfitSummaries.map((summary) => {
             const localCapital =
@@ -1286,238 +1085,88 @@ export default function Dashboard() {
             return (
               <div
                 key={summary.investor.id}
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 12,
-                  padding: 18,
-                  marginBottom: 16,
-                  background: "#fafafa",
-                }}
+                className="cf-inset"
+                style={{ marginBottom: 16 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: 15,
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                  }}
-                >
+                <div className="cf-flex-between">
                   <div>
-                    <h3
-                      style={{
-                        marginTop: 0,
-                        marginBottom: 7,
-                      }}
-                    >
+                    <h3 style={{ marginBottom: 8 }}>
                       {summary.investor.name}
                     </h3>
 
-                    <span
-                      style={{
-                        background: "#ede9fe",
-                        color: "#5b21b6",
-                        borderRadius: 20,
-                        padding: "5px 10px",
-                        fontSize: 14,
-                        fontWeight: 700,
-                      }}
-                    >
-                      {summary.investor.profitShare}% of
-                      your profit side
+                    <span className="cf-badge cf-badge-violet">
+                      {summary.investor.profitShare}% of your profit side
                     </span>
                   </div>
 
-                  <div
-                    style={{
-                      textAlign: "right",
-                    }}
-                  >
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        fontSize: 14,
-                      }}
-                    >
+                  <div style={{ textAlign: "right" }}>
+                    <div className="cf-mini-label" style={{ marginBottom: 4 }}>
                       Total profit earned
                     </div>
 
-                    <strong
-                      style={{
-                        display: "block",
-                        color: "#7c3aed",
-                        fontSize: 23,
-                        marginTop: 4,
-                      }}
-                    >
+                    <strong className="cf-stat-value num cf-accent-text">
                       {formatYen(summary.totalProfit)}
                     </strong>
                   </div>
                 </div>
 
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(190px, 1fr))",
-                    gap: 12,
-                    marginTop: 18,
-                  }}
+                  className="cf-grid cf-grid-auto-sm"
+                  style={{ marginTop: 18 }}
                 >
-                  <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      This month
-                    </div>
-
-                    <strong
-                      style={{
-                        display: "block",
-                        fontSize: 20,
-                        marginTop: 5,
-                        color: "#7c3aed",
-                      }}
-                    >
+                  <div className="cf-card cf-card-pad">
+                    <div className="cf-mini-label">This month</div>
+                    <strong className="num cf-accent-text" style={{ fontSize: "1.25rem" }}>
                       {formatYen(summary.monthlyProfit)}
                     </strong>
-
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        marginTop: 5,
-                        fontSize: 14,
-                      }}
-                    >
+                    <div className="cf-muted" style={{ marginTop: 4, fontSize: "0.82rem" }}>
                       {summary.monthlyCars} vehicles
                     </div>
                   </div>
 
-                  <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      Lifetime local profit
-                    </div>
-
-                    <strong
-                      style={{
-                        display: "block",
-                        fontSize: 20,
-                        marginTop: 5,
-                      }}
-                    >
-                      {formatYen(
-                        summary.totalLocalProfit
-                      )}
+                  <div className="cf-card cf-card-pad">
+                    <div className="cf-mini-label">Lifetime local profit</div>
+                    <strong className="num" style={{ fontSize: "1.25rem" }}>
+                      {formatYen(summary.totalLocalProfit)}
                     </strong>
                   </div>
 
-                  <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      Lifetime export profit
-                    </div>
-
-                    <strong
-                      style={{
-                        display: "block",
-                        fontSize: 20,
-                        marginTop: 5,
-                      }}
-                    >
-                      {formatYen(
-                        summary.totalExportProfit
-                      )}
+                  <div className="cf-card cf-card-pad">
+                    <div className="cf-mini-label">Lifetime export profit</div>
+                    <strong className="num" style={{ fontSize: "1.25rem" }}>
+                      {formatYen(summary.totalExportProfit)}
                     </strong>
                   </div>
 
-                  <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      Total vehicles
-                    </div>
-
-                    <strong
-                      style={{
-                        display: "block",
-                        fontSize: 20,
-                        marginTop: 5,
-                      }}
-                    >
+                  <div className="cf-card cf-card-pad">
+                    <div className="cf-mini-label">Total vehicles</div>
+                    <strong className="num" style={{ fontSize: "1.25rem" }}>
                       {summary.totalCars}
                     </strong>
                   </div>
                 </div>
 
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(210px, 1fr))",
-                    gap: 12,
-                    marginTop: 12,
-                  }}
+                  className="cf-grid cf-grid-auto"
+                  style={{ marginTop: 12 }}
                 >
-                  <div
-                    style={{
-                      ...summaryBoxStyle,
-                      background: "#eff6ff",
-                    }}
-                  >
-                    <div style={{ color: "#6b7280" }}>
-                      Local capital available
-                    </div>
-
-                    <strong
-                      style={{
-                        display: "block",
-                        marginTop: 5,
-                        color: "#2563eb",
-                      }}
-                    >
+                  <div className="cf-card cf-card-pad">
+                    <div className="cf-mini-label">Local capital available</div>
+                    <strong className="num cf-brand-text">
                       {formatYen(localCapital)}
                     </strong>
-
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        marginTop: 7,
-                        fontSize: 14,
-                      }}
-                    >
-                      Monthly local profit:{" "}
-                      {formatYen(
-                        summary.monthlyLocalProfit
-                      )}
+                    <div className="cf-muted" style={{ marginTop: 6, fontSize: "0.82rem" }}>
+                      Monthly local profit: {formatYen(summary.monthlyLocalProfit)}
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      ...summaryBoxStyle,
-                      background: "#f5f3ff",
-                    }}
-                  >
-                    <div style={{ color: "#6b7280" }}>
-                      Export capital available
-                    </div>
-
-                    <strong
-                      style={{
-                        display: "block",
-                        marginTop: 5,
-                        color: "#7c3aed",
-                      }}
-                    >
+                  <div className="cf-card cf-card-pad">
+                    <div className="cf-mini-label">Export capital available</div>
+                    <strong className="num cf-accent-text">
                       {formatYen(exportCapital)}
                     </strong>
-
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        marginTop: 7,
-                        fontSize: 14,
-                      }}
-                    >
-                      Monthly export profit:{" "}
-                      {formatYen(
-                        summary.monthlyExportProfit
-                      )}
+                    <div className="cf-muted" style={{ marginTop: 6, fontSize: "0.82rem" }}>
+                      Monthly export profit: {formatYen(summary.monthlyExportProfit)}
                     </div>
                   </div>
                 </div>
@@ -1525,135 +1174,94 @@ export default function Dashboard() {
             );
           })
         )}
-      </div>
+      </section>
 
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: 20,
-          marginTop: 30,
-        }}
+        className="cf-grid cf-grid-auto-lg"
+        style={{ marginTop: 28 }}
       >
-        <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>
-            Inventory Status
-          </h2>
+        <div className="cf-panel">
+          <h2>Inventory Status</h2>
 
-          <div style={tableRowStyle}>
+          <div className="cf-datarow" style={{ marginTop: 8 }}>
             <span>In stock</span>
-            <strong>{carsInStock}</strong>
+            <strong className="num">{carsInStock}</strong>
           </div>
 
-          <div style={tableRowStyle}>
+          <div className="cf-datarow">
             <span>Reserved</span>
-            <strong>{carsReserved}</strong>
+            <strong className="num">{carsReserved}</strong>
           </div>
 
-          <div style={tableRowStyle}>
+          <div className="cf-datarow">
             <span>Shipping</span>
-            <strong>{carsShipping}</strong>
+            <strong className="num">{carsShipping}</strong>
           </div>
 
-          <div
-            style={{
-              ...tableRowStyle,
-              borderBottom: "none",
-            }}
-          >
+          <div className="cf-datarow">
             <span>Sold</span>
-            <strong>{carsSold}</strong>
+            <strong className="num">{carsSold}</strong>
           </div>
         </div>
 
-        <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>
-            Expense Payments
-          </h2>
+        <div className="cf-panel">
+          <h2>Expense Payments</h2>
 
-          <div style={tableRowStyle}>
+          <div className="cf-datarow" style={{ marginTop: 8 }}>
             <span>Paid by me</span>
-            <strong>
+            <strong className="num">
               {formatYen(totalExpensesPaidByMe)}
             </strong>
           </div>
 
-          <div
-            style={{
-              ...tableRowStyle,
-              borderBottom: "none",
-            }}
-          >
+          <div className="cf-datarow">
             <span>Paid by partner</span>
-            <strong>
-              {formatYen(
-                totalExpensesPaidByPartner
-              )}
+            <strong className="num">
+              {formatYen(totalExpensesPaidByPartner)}
             </strong>
           </div>
         </div>
 
-        <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>
-            Business Alerts
+        <div className="cf-panel">
+          <div className="cf-section-title">
+            <h2>Business Alerts</h2>
             {alertCount > 0 && (
-              <span
-                style={{
-                  background: "#dc2626",
-                  color: "white",
-                  borderRadius: 20,
-                  padding: "3px 9px",
-                  fontSize: 14,
-                  marginLeft: 9,
-                }}
-              >
-                {alertCount}
-              </span>
+              <span className="cf-badge cf-badge-amber">{alertCount}</span>
             )}
-          </h2>
+          </div>
 
           {alertCount === 0 ? (
-            <p style={{ color: "#166534" }}>
-              Everything looks up to date.
-            </p>
+            <p className="cf-pos">Everything looks up to date.</p>
           ) : (
-            <>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {carsMissingPurchaseDate.length > 0 && (
-                <p>
-                  ⚠ Cars missing purchase dates:{" "}
-                  <strong>
-                    {carsMissingPurchaseDate.length}
-                  </strong>
-                </p>
+                <div className="cf-callout cf-callout-amber">
+                  Cars missing purchase dates:{" "}
+                  <strong>{carsMissingPurchaseDate.length}</strong>
+                </div>
               )}
 
               {soldCarsMissingSaleDate.length > 0 && (
-                <p>
-                  ⚠ Sold cars missing sale dates:{" "}
-                  <strong>
-                    {soldCarsMissingSaleDate.length}
-                  </strong>
-                </p>
+                <div className="cf-callout cf-callout-amber">
+                  Sold cars missing sale dates:{" "}
+                  <strong>{soldCarsMissingSaleDate.length}</strong>
+                </div>
               )}
 
-              {carsMissingBusinessType.length >
-                0 && (
-                <p>
-                  ⚠ Cars missing business type:{" "}
-                  <strong>
-                    {carsMissingBusinessType.length}
-                  </strong>
-                </p>
+              {carsMissingBusinessType.length > 0 && (
+                <div className="cf-callout cf-callout-amber">
+                  Cars missing business type:{" "}
+                  <strong>{carsMissingBusinessType.length}</strong>
+                </div>
               )}
 
               {oldStockCars.length > 0 && (
-                <p>
-                  ⚠ Cars held for more than 60 days:{" "}
+                <div className="cf-callout cf-callout-amber">
+                  Cars held for more than 60 days:{" "}
                   <strong>{oldStockCars.length}</strong>
-                </p>
+                </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>

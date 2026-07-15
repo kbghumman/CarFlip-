@@ -14,23 +14,6 @@ type VehicleProfitSummaryProps = {
   investors: Investor[];
 };
 
-const sectionStyle = {
-  background: "white",
-  border: "1px solid #e5e7eb",
-  borderRadius: 12,
-  padding: 18,
-};
-
-const rowStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: 15,
-  padding: "9px 0",
-  borderBottom: "1px solid #e5e7eb",
-  flexWrap: "wrap" as const,
-};
-
 export default function VehicleProfitSummary({
   car,
   investors,
@@ -58,108 +41,69 @@ export default function VehicleProfitSummary({
       : 0;
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns:
-          "repeat(auto-fit, minmax(280px, 1fr))",
-        gap: 18,
-      }}
-    >
-      <section style={sectionStyle}>
-        <h3 style={{ marginTop: 0 }}>
-          Financial Summary
-        </h3>
+    <div className="cf-grid cf-grid-auto-lg">
+      <section className="cf-card cf-card-pad">
+        <h3 style={{ marginBottom: 8 }}>Financial Summary</h3>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Final auction price</span>
-
-          <strong>
+          <strong className="num">
             {formatYen(car.auctionFinalPrice)}
           </strong>
         </div>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Total cost</span>
-
-          <strong>{formatYen(totalCost)}</strong>
+          <strong className="num">{formatYen(totalCost)}</strong>
         </div>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Break-even price</span>
-
-          <strong>{formatYen(breakEvenPrice)}</strong>
+          <strong className="num">{formatYen(breakEvenPrice)}</strong>
         </div>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Sale price</span>
-
-          <strong>
-            {hasSale
-              ? formatYen(car.salePrice)
-              : "Awaiting sale"}
+          <strong className="num">
+            {hasSale ? formatYen(car.salePrice) : "Awaiting sale"}
           </strong>
         </div>
 
-        <div
-          style={{
-            ...rowStyle,
-            borderBottom: "none",
-          }}
-        >
+        <div className="cf-datarow">
           <span>Net result</span>
-
           <strong
-            style={{
-              color: hasSale
-                ? netProfit >= 0
-                  ? "#16a34a"
-                  : "#dc2626"
-                : "#6b7280",
-            }}
+            className={
+              "num " +
+              (hasSale ? (netProfit >= 0 ? "cf-pos" : "cf-neg") : "cf-muted")
+            }
           >
-            {hasSale
-              ? formatYen(netProfit)
-              : "Pending"}
+            {hasSale ? formatYen(netProfit) : "Pending"}
           </strong>
         </div>
 
         {hasSale && (
           <div
-            style={{
-              marginTop: 14,
-              padding: 12,
-              borderRadius: 9,
-              background:
-                roi >= 0 ? "#f0fdf4" : "#fef2f2",
-            }}
+            className={
+              "cf-callout " +
+              (roi >= 0 ? "cf-callout-green" : "cf-callout-red")
+            }
+            style={{ marginTop: 14 }}
           >
-            <strong
-              style={{
-                color:
-                  roi >= 0 ? "#166534" : "#991b1b",
-              }}
-            >
-              ROI: {roi.toFixed(1)}%
-            </strong>
+            <strong className="num">ROI: {roi.toFixed(1)}%</strong>
           </div>
         )}
       </section>
 
-      <section style={sectionStyle}>
-        <h3 style={{ marginTop: 0 }}>
-          Ownership and Funding
-        </h3>
+      <section className="cf-card cf-card-pad">
+        <h3 style={{ marginBottom: 8 }}>Ownership and Funding</h3>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Ownership</span>
-
           <strong>{car.ownership}</strong>
         </div>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Business type</span>
-
           <strong>
             {car.saleType === "Local"
               ? "Local Trading"
@@ -169,43 +113,28 @@ export default function VehicleProfitSummary({
           </strong>
         </div>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Funding source</span>
-
-          <strong>
-            {investor
-              ? investor.name
-              : "Self-funded"}
-          </strong>
+          <strong>{investor ? investor.name : "Self-funded"}</strong>
         </div>
 
-        <div style={rowStyle}>
+        <div className="cf-datarow">
           <span>Investor allocation</span>
-
-          <strong>
-            {investor
-              ? formatYen(investorAllocation)
-              : formatYen(0)}
+          <strong className="num">
+            {investor ? formatYen(investorAllocation) : formatYen(0)}
           </strong>
         </div>
 
-        <div
-          style={{
-            ...rowStyle,
-            borderBottom: "none",
-          }}
-        >
+        <div className="cf-datarow">
           <span>Funding status</span>
-
           <strong
-            style={{
-              color:
-                car.fundingStatus === "Closed"
-                  ? "#16a34a"
-                  : car.fundingStatus === "Allocated"
-                    ? "#7c3aed"
-                    : "#6b7280",
-            }}
+            className={
+              car.fundingStatus === "Closed"
+                ? "cf-pos"
+                : car.fundingStatus === "Allocated"
+                  ? "cf-accent-text"
+                  : "cf-muted"
+            }
           >
             {car.fundingStatus}
           </strong>
@@ -214,73 +143,54 @@ export default function VehicleProfitSummary({
 
       {hasSale && (
         <section
+          className={
+            "cf-card cf-card-pad " +
+            (netProfit >= 0 ? "" : "")
+          }
           style={{
-            ...sectionStyle,
-            background:
-              netProfit >= 0 ? "#f0fdf4" : "#fef2f2",
+            background: netProfit >= 0 ? "var(--pos-bg)" : "var(--neg-bg)",
+            borderColor:
+              netProfit >= 0 ? "var(--pos-border)" : "var(--neg-border)",
           }}
         >
-          <h3 style={{ marginTop: 0 }}>
-            Profit Distribution
-          </h3>
+          <h3 style={{ marginBottom: 8 }}>Profit Distribution</h3>
 
           {car.ownership === "Me + Partner" && (
-            <div style={rowStyle}>
+            <div className="cf-datarow">
               <span>Business partner</span>
-
-              <strong>
-                {formatYen(
-                  distribution.partnerProfit
-                )}
+              <strong className="num">
+                {formatYen(distribution.partnerProfit)}
               </strong>
             </div>
           )}
 
-          <div style={rowStyle}>
+          <div className="cf-datarow">
             <span>Your side before investor</span>
-
-            <strong>
-              {formatYen(
-                distribution.yourSideProfit
-              )}
+            <strong className="num">
+              {formatYen(distribution.yourSideProfit)}
             </strong>
           </div>
 
           {investor && netProfit > 0 && (
-            <div style={rowStyle}>
+            <div className="cf-datarow">
               <span>
-                {investor.name} (
-                {investor.profitShare}%)
+                {investor.name} ({investor.profitShare}%)
               </span>
-
-              <strong>
-                {formatYen(
-                  distribution.investorProfit
-                )}
+              <strong className="num">
+                {formatYen(distribution.investorProfit)}
               </strong>
             </div>
           )}
 
-          <div
-            style={{
-              ...rowStyle,
-              borderBottom: "none",
-              fontSize: 18,
-            }}
-          >
+          <div className="cf-datarow" style={{ fontSize: "1.05rem" }}>
             <span>Your final profit</span>
-
             <strong
-              style={{
-                color:
-                  distribution.yourFinalProfit >= 0
-                    ? "#16a34a"
-                    : "#dc2626",
-              }}
+              className={
+                "num " +
+                (distribution.yourFinalProfit >= 0 ? "cf-pos" : "cf-neg")
+              }
             >
-              {formatYen(
-                distribution.yourFinalProfit
-              )}
+              {formatYen(distribution.yourFinalProfit)}
             </strong>
           </div>
         </section>

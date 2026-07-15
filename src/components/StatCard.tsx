@@ -11,32 +11,12 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      style={{
-        background: "white",
-        borderRadius: 16,
-        padding: 24,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-        minWidth: 220,
-        flex: 1,
-      }}
+      className="cf-stat"
+      style={{ ["--stat-accent" as string]: color }}
     >
-      <div
-        style={{
-          color: "#6b7280",
-          marginBottom: 12,
-          fontWeight: 600,
-        }}
-      >
-        {title}
-      </div>
+      <div className="cf-stat-label">{title}</div>
 
-      <div
-        style={{
-          fontSize: 32,
-          fontWeight: "bold",
-          color,
-        }}
-      >
+      <div className="cf-stat-value num" style={{ color }}>
         {value}
       </div>
     </div>

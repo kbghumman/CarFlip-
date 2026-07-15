@@ -8,45 +8,32 @@ import Capital from "./pages/Capital";
 import Customers from "./pages/Customers";
 
 export default function App() {
-  const [page, setPage] =
-    useState("dashboard");
+  const [page, setPage] = useState("dashboard");
 
   return (
-    <div>
-      <Navbar
-        currentPage={page}
-        onChangePage={setPage}
-      />
+    <div className="cf-app">
+      <Navbar currentPage={page} onChangePage={setPage} />
 
-      <div
-        style={{
-          padding: 30,
-          maxWidth: 1300,
-          margin: "0 auto",
-        }}
-      >
-        {page === "dashboard" && (
-          <Dashboard />
-        )}
+      <main className="cf-main">
+        <div className="cf-content">
+          {page === "dashboard" && <Dashboard />}
 
-        {page === "cars" && <Cars />}
+          {page === "cars" && <Cars />}
 
-        {page === "expenses" && (
-          <Expenses />
-        )}
+          {page === "expenses" && <Expenses />}
 
-        {page === "capital" && (
-          <Capital />
-        )}
+          {page === "capital" && <Capital />}
 
-        {page === "customers" && (
-          <Customers />
-        )}
+          {page === "customers" && <Customers />}
 
-        {page === "reports" && (
-          <h1>Reports — Coming Soon</h1>
-        )}
-      </div>
+          {page === "reports" && (
+            <div className="cf-empty">
+              <h2 style={{ marginBottom: 8 }}>Reports</h2>
+              <p>Reporting and exports are coming soon.</p>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
