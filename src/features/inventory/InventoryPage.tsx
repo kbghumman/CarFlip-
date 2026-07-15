@@ -21,6 +21,7 @@ import ExpenseManager from "./ExpenseManager";
 type StatusFilter = "All" | CarStatus;
 type BusinessFilter = "All" | BusinessType;
 type OwnershipFilter = "All" | VehicleOwnership;
+type InvestorFilter = "All" | "Self-funded" | number;
 
 export default function InventoryPage() {
   const [cars, setCars] = useState<Car[]>(() => loadCars());
@@ -49,6 +50,9 @@ export default function InventoryPage() {
 
   const [ownershipFilter, setOwnershipFilter] =
     useState<OwnershipFilter>("All");
+
+  const [investorFilter, setInvestorFilter] =
+    useState<InvestorFilter>("All");
 
   function updateCars(updatedCars: Car[]) {
     setCars(updatedCars);
@@ -152,6 +156,7 @@ export default function InventoryPage() {
     setStatusFilter("All");
     setBusinessFilter("All");
     setOwnershipFilter("All");
+    setInvestorFilter("All");
   }
 
   const selectedExpenseCar =
@@ -186,11 +191,19 @@ export default function InventoryPage() {
         ownershipFilter === "All" ||
         car.ownership === ownershipFilter;
 
+      const matchesInvestor =
+        investorFilter === "All"
+          ? true
+          : investorFilter === "Self-funded"
+            ? car.investorId === null
+            : car.investorId === investorFilter;
+
       return (
         matchesSearch &&
         matchesStatus &&
         matchesBusiness &&
-        matchesOwnership
+        matchesOwnership &&
+        matchesInvestor
       );
     });
   }, [
@@ -199,6 +212,7 @@ export default function InventoryPage() {
     statusFilter,
     businessFilter,
     ownershipFilter,
+    investorFilter,
   ]);
 
   const inputStyle = {
@@ -389,6 +403,38 @@ export default function InventoryPage() {
             <option value="Me + Partner">
               Me + Partner
             </option>
+          </select>
+
+          <select
+            value={investorFilter}
+            onChange={(event) => {
+              const value = event.target.value;
+
+              setInvestorFilter(
+                value === "All" ||
+                value === "Self-funded"
+                  ? value
+                  : Number(value)
+              );
+            }}
+            style={inputStyle}
+          >
+            <option value="All">
+              All investors
+            </option>
+
+            <option value="Self-funded">
+              Self-funded
+            </option>
+
+            {investors.map((investor) => (
+              <option
+                key={investor.id}
+                value={investor.id}
+              >
+                {investor.name}
+              </option>
+            ))}
           </select>
         </div>
 
