@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { syncAppStateToCloud } from "../utils/cloudStorage";
+
 import type { Car } from "../types";
 
 import {
@@ -216,6 +218,7 @@ export default function Capital() {
       "investors",
       JSON.stringify(investors)
     );
+    void syncAppStateToCloud();
   }, [investors]);
 
   function saveInvestor() {

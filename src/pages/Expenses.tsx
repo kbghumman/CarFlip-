@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { syncAppStateToCloud } from "../utils/cloudStorage";
+
 type ExpensePayer = "Me" | "Business Partner";
 
 type ExpenseCategory =
@@ -98,6 +100,7 @@ export default function Expenses() {
 
   useEffect(() => {
     localStorage.setItem("cars", JSON.stringify(cars));
+    void syncAppStateToCloud();
   }, [cars]);
 
   function saveExpense() {
