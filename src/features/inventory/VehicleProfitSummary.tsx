@@ -15,9 +15,10 @@ type VehicleProfitSummaryProps = {
 };
 
 const sectionStyle = {
-  background: "white",
-  border: "1px solid #e5e7eb",
-  borderRadius: 12,
+  background:
+    "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)",
+  border: "1px solid rgba(148, 163, 184, 0.22)",
+  borderRadius: 16,
   padding: 18,
 };
 
@@ -27,7 +28,7 @@ const rowStyle = {
   alignItems: "center",
   gap: 15,
   padding: "9px 0",
-  borderBottom: "1px solid #e5e7eb",
+  borderBottom: "1px solid rgba(148, 163, 184, 0.2)",
   flexWrap: "wrap" as const,
 };
 
@@ -129,7 +130,7 @@ export default function VehicleProfitSummary({
             style={{
               marginTop: 14,
               padding: 12,
-              borderRadius: 9,
+              borderRadius: 12,
               background:
                 roi >= 0 ? "#f0fdf4" : "#fef2f2",
             }}

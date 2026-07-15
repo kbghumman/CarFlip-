@@ -270,25 +270,27 @@ export default function Expenses() {
 
   const inputStyle = {
     width: "100%",
-    padding: 10,
+    padding: 12,
     marginBottom: 12,
     boxSizing: "border-box" as const,
-    border: "1px solid #d1d5db",
-    borderRadius: 7,
+    border: "1px solid rgba(148, 163, 184, 0.35)",
+    borderRadius: 12,
+    background: "rgba(255,255,255,0.96)",
+    color: "#0f172a",
   };
 
   const buttonStyle = {
     color: "white",
     border: "none",
     padding: "10px 14px",
-    borderRadius: 7,
+    borderRadius: 999,
     cursor: "pointer",
     fontWeight: 600,
   };
 
   return (
     <div>
-      <h1 style={{ marginBottom: 5 }}>Expenses</h1>
+      <h1 style={{ marginBottom: 5, color: "#0f172a" }}>Expenses</h1>
 
       <p style={{ color: "#6b7280", marginTop: 0 }}>
         Add and manage expenses for every vehicle
@@ -296,15 +298,17 @@ export default function Expenses() {
 
       <div
         style={{
-          background: "white",
-          padding: 20,
-          borderRadius: 12,
-          maxWidth: 700,
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)",
+          padding: 22,
+          borderRadius: 20,
+          maxWidth: 760,
           marginTop: 20,
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          boxShadow: "0 20px 50px -24px rgba(15, 23, 42, 0.28)",
+          border: "1px solid rgba(148, 163, 184, 0.24)",
         }}
       >
-        <h2>
+        <h2 style={{ color: "#0f172a" }}>
           {editingExpenseId !== null ? "Edit Expense" : "Add Expense"}
         </h2>
 
@@ -626,11 +630,13 @@ export default function Expenses() {
             <div
               key={`${car.id}-${expense.id}`}
               style={{
-                background: "white",
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
                 padding: 18,
-                borderRadius: 12,
+                borderRadius: 16,
                 marginBottom: 12,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+                boxShadow: "0 16px 35px -24px rgba(15, 23, 42, 0.22)",
+                border: "1px solid rgba(148, 163, 184, 0.24)",
               }}
             >
               <div

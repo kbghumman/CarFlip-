@@ -34,12 +34,8 @@ export function getExpenseTotal(
   }
 
   return car.expenses.reduce(
-    (total, expense) => {
-      return (
-        total +
-        toNumber(expense?.amount)
-      );
-    },
+    (total, expense) =>
+      total + toNumber(expense?.amount),
     0
   );
 }
@@ -57,12 +53,11 @@ export function getExpensesPaidBy(
       (expense) =>
         expense?.paidBy === payer
     )
-    .reduce((total, expense) => {
-      return (
-        total +
-        toNumber(expense?.amount)
-      );
-    }, 0);
+    .reduce(
+      (total, expense) =>
+        total + toNumber(expense?.amount),
+      0
+    );
 }
 
 export function getTotalCost(
@@ -193,8 +188,7 @@ export function getProfitDistribution(
       : 0;
 
   const yourFinalProfit =
-    yourSideProfit -
-    investorProfit;
+    yourSideProfit - investorProfit;
 
   return {
     netProfit,
@@ -238,12 +232,11 @@ export function getInvestorDeposits(
         correctBusiness
       );
     })
-    .reduce((total, transaction) => {
-      return (
-        total +
-        toNumber(transaction.amount)
-      );
-    }, 0);
+    .reduce(
+      (total, transaction) =>
+        total + toNumber(transaction.amount),
+      0
+    );
 }
 
 export function getInvestorReturns(
@@ -279,12 +272,30 @@ export function getInvestorReturns(
         correctBusiness
       );
     })
-    .reduce((total, transaction) => {
-      return (
-        total +
-        toNumber(transaction.amount)
-      );
-    }, 0);
+    .reduce(
+      (total, transaction) =>
+        total + toNumber(transaction.amount),
+      0
+    );
+}
+
+export function getInvestorTotalCapital(
+  investor: Investor | undefined,
+  businessType?: Exclude<
+    BusinessType,
+    "Not decided"
+  >
+) {
+  return (
+    getInvestorDeposits(
+      investor,
+      businessType
+    ) -
+    getInvestorReturns(
+      investor,
+      businessType
+    )
+  );
 }
 
 export function getInvestorAllocatedCapital(
@@ -312,9 +323,11 @@ export function getInvestorAllocatedCapital(
         !businessType ||
         car.saleType === businessType;
 
+      // Capital is tied up only while the car is unsold
+      // and the investment remains allocated.
       const investmentIsOpen =
-        car.fundingStatus ===
-        "Allocated";
+        car.fundingStatus === "Allocated" &&
+        car.status !== "Sold";
 
       return (
         belongsToInvestor &&
@@ -322,12 +335,11 @@ export function getInvestorAllocatedCapital(
         investmentIsOpen
       );
     })
-    .reduce((total, car) => {
-      return (
-        total +
-        getInvestorAllocation(car)
-      );
-    }, 0);
+    .reduce(
+      (total, car) =>
+        total + getInvestorAllocation(car),
+      0
+    );
 }
 
 export function getInvestorAvailableCapital(
@@ -342,14 +354,8 @@ export function getInvestorAvailableCapital(
     return 0;
   }
 
-  const deposited =
-    getInvestorDeposits(
-      investor,
-      businessType
-    );
-
-  const returned =
-    getInvestorReturns(
+  const totalCapital =
+    getInvestorTotalCapital(
       investor,
       businessType
     );
@@ -361,11 +367,7 @@ export function getInvestorAvailableCapital(
       businessType
     );
 
-  return (
-    deposited -
-    returned -
-    allocated
-  );
+  return totalCapital - allocated;
 }
 
 export function dateMatchesMonth(

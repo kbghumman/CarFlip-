@@ -158,15 +158,17 @@ export default function Customers() {
   const inputStyle = {
     width: "100%",
     boxSizing: "border-box" as const,
-    padding: 11,
-    border: "1px solid #d1d5db",
-    borderRadius: 8,
+    padding: 12,
+    border: "1px solid rgba(148, 163, 184, 0.35)",
+    borderRadius: 12,
     fontSize: 15,
+    background: "rgba(255,255,255,0.96)",
+    color: "#0f172a",
   };
 
   const buttonStyle = {
     border: "none",
-    borderRadius: 8,
+    borderRadius: 999,
     padding: "9px 13px",
     cursor: "pointer",
     fontWeight: 700,
@@ -180,6 +182,7 @@ export default function Customers() {
           style={{
             marginTop: 0,
             marginBottom: 5,
+            color: "#0f172a",
           }}
         >
           Customers
@@ -207,9 +210,9 @@ export default function Customers() {
       >
         <div
           style={{
-            background: "#fef3c7",
-            border: "1px solid #fde68a",
-            borderRadius: 12,
+            background: "#fff7ed",
+            border: "1px solid #fed7aa",
+            borderRadius: 16,
             padding: 18,
           }}
         >
@@ -231,9 +234,9 @@ export default function Customers() {
 
         <div
           style={{
-            background: "#dcfce7",
+            background: "#f0fdf4",
             border: "1px solid #bbf7d0",
-            borderRadius: 12,
+            borderRadius: 16,
             padding: 18,
           }}
         >
@@ -257,7 +260,7 @@ export default function Customers() {
           style={{
             background: "#eff6ff",
             border: "1px solid #bfdbfe",
-            borderRadius: 12,
+            borderRadius: 16,
             padding: 18,
           }}
         >
@@ -280,16 +283,16 @@ export default function Customers() {
 
       <section
         style={{
-          background: "white",
-          border: "1px solid #e5e7eb",
-          borderRadius: 14,
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)",
+          border: "1px solid rgba(148, 163, 184, 0.24)",
+          borderRadius: 20,
           padding: 20,
-          boxShadow:
-            "0 4px 14px rgba(0,0,0,0.07)",
+          boxShadow: "0 20px 50px -24px rgba(15, 23, 42, 0.28)",
           marginBottom: 25,
         }}
       >
-        <h2 style={{ marginTop: 0 }}>
+        <h2 style={{ marginTop: 0, color: "#0f172a" }}>
           Search and Filters
         </h2>
 
@@ -365,11 +368,12 @@ export default function Customers() {
       {soldCars.length === 0 ? (
         <div
           style={{
-            background: "white",
-            border: "1px solid #e5e7eb",
-            borderRadius: 12,
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
+            border: "1px solid rgba(148, 163, 184, 0.24)",
+            borderRadius: 18,
             padding: 25,
-            color: "#6b7280",
+            color: "#64748b",
             textAlign: "center",
           }}
         >
@@ -381,13 +385,13 @@ export default function Customers() {
           <article
             key={car.id}
             style={{
-              background: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: 13,
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
+              border: "1px solid rgba(148, 163, 184, 0.24)",
+              borderRadius: 18,
               padding: 20,
               marginBottom: 15,
-              boxShadow:
-                "0 3px 12px rgba(0,0,0,0.06)",
+              boxShadow: "0 16px 35px -24px rgba(15, 23, 42, 0.22)",
             }}
           >
             <div

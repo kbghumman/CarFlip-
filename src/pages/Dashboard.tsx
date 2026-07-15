@@ -3,6 +3,7 @@ import StatCard from "../components/StatCard";
 
 type CarStatus = "In Stock" | "Reserved" | "Sold" | "Shipping";
 type SaleType = "Not decided" | "Local" | "Export";
+type VehicleOwnership = "Mine Only" | "Me + Partner";
 type ExpensePayer = "Me" | "Business Partner";
 type InvestorShare = 25 | 50;
 type BusinessType = "Local" | "Export";
@@ -30,6 +31,7 @@ type Car = {
   salePrice?: string;
   status?: CarStatus;
   saleType?: SaleType;
+  ownership?: VehicleOwnership;
   investorId?: number | null;
   expenses?: Expense[];
 };
@@ -92,6 +94,10 @@ function getSavedCars(): Car[] {
       expenses: Array.isArray(car.expenses)
         ? car.expenses
         : [],
+      ownership:
+        car.ownership === "Mine Only"
+          ? "Mine Only"
+          : "Me + Partner",
       investorId:
         typeof car.investorId === "number"
           ? car.investorId
@@ -198,8 +204,18 @@ function getProfitDistribution(
   investors: Investor[]
 ) {
   const netProfit = getNetProfit(car);
-  const partnerProfit = netProfit * 0.5;
-  const yourSideProfit = netProfit * 0.5;
+
+  const isPartnered =
+    car.ownership === "Me + Partner";
+
+  const partnerProfit = isPartnered
+    ? netProfit * 0.5
+    : 0;
+
+  const yourSideProfit = isPartnered
+    ? netProfit * 0.5
+    : netProfit;
+
   const investor = getInvestor(car, investors);
 
   const investorProfit =
@@ -369,10 +385,16 @@ export default function Dashboard() {
     (car) => car.status === "Sold"
   ).length;
 
-  const totalBusinessCost = cars.reduce(
-    (total, car) => total + getTotalCost(car),
-    0
-  );
+  const inventoryValue = cars
+    .filter(
+      (car) =>
+        car.status !== "Sold" &&
+        Number(car.auctionFinalPrice) > 0
+    )
+    .reduce(
+      (total, car) => total + getTotalCost(car),
+      0
+    );
 
   const totalSales = cars.reduce(
     (total, car) =>
@@ -763,50 +785,126 @@ export default function Dashboard() {
     );
 
   const panelStyle = {
-    background: "white",
-    padding: 20,
-    borderRadius: 12,
-    boxShadow:
-      "0 4px 12px rgba(0,0,0,0.08)",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)",
+    padding: 22,
+    borderRadius: 22,
+    border: "1px solid rgba(15, 23, 42, 0.07)",
+    boxShadow: "0 20px 50px -24px rgba(15, 23, 42, 0.28)",
   };
 
   const summaryBoxStyle = {
-    background: "#f9fafb",
-    border: "1px solid #e5e7eb",
-    padding: 15,
-    borderRadius: 10,
+    background: "rgba(248, 250, 252, 0.92)",
+    border: "1px solid rgba(148, 163, 184, 0.24)",
+    padding: 16,
+    borderRadius: 16,
   };
 
   const tableRowStyle = {
     display: "flex",
     justifyContent: "space-between",
     gap: 20,
-    padding: "11px 0",
-    borderBottom: "1px solid #e5e7eb",
+    padding: "12px 0",
+    borderBottom: "1px solid rgba(148, 163, 184, 0.2)",
     flexWrap: "wrap" as const,
+    color: "#334155",
+    fontSize: 14,
   };
 
   return (
-    <div>
-      <h1 style={{ marginBottom: 5 }}>
-        Dashboard
-      </h1>
-
-      <p
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div
         style={{
-          color: "#6b7280",
-          marginTop: 0,
+          background:
+            "linear-gradient(135deg, #0f172a 0%, #111827 42%, #2563eb 100%)",
+          borderRadius: 28,
+          padding: "28px 30px",
+          color: "white",
+          boxShadow: "0 24px 80px -24px rgba(15, 23, 42, 0.55)",
         }}
       >
-        Financial and operational overview of MianOS
-      </p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 20,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                display: "inline-flex",
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.16)",
+                color: "rgba(255,255,255,0.9)",
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+              }}
+            >
+              CarFlip command center
+            </div>
+
+            <h1
+              style={{
+                margin: "10px 0 8px",
+                color: "white",
+                fontSize: 34,
+                lineHeight: 1.05,
+              }}
+            >
+              Dashboard
+            </h1>
+
+            <p
+              style={{
+                color: "rgba(255,255,255,0.82)",
+                margin: 0,
+                maxWidth: 620,
+                lineHeight: 1.6,
+              }}
+            >
+              Financial and operational overview of your
+              vehicle flipping business, designed for fast
+              decision-making.
+            </p>
+          </div>
+
+          <div
+            style={{
+              minWidth: 220,
+              background: "rgba(255,255,255,0.14)",
+              border: "1px solid rgba(255,255,255,0.16)",
+              borderRadius: 20,
+              padding: 18,
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 13 }}>
+              Selected period
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, marginTop: 6 }}>
+              {monthNames[selectedMonth]} {selectedYear}
+            </div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.76)", marginTop: 8 }}>
+              {alertCount > 0
+                ? `${alertCount} attention points to review`
+                : "Everything is looking healthy"}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div
         style={{
-          display: "flex",
-          gap: 20,
-          marginTop: 25,
-          flexWrap: "wrap",
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 16,
         }}
       >
         <StatCard
@@ -816,8 +914,8 @@ export default function Dashboard() {
         />
 
         <StatCard
-          title="Total Business Cost"
-          value={formatYen(totalBusinessCost)}
+          title="Inventory Value"
+          value={formatYen(inventoryValue)}
           color="#7c3aed"
         />
 
@@ -840,10 +938,10 @@ export default function Dashboard() {
 
       <div
         style={{
-          display: "flex",
-          gap: 20,
-          marginTop: 20,
-          flexWrap: "wrap",
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 16,
         }}
       >
         <StatCard
@@ -871,12 +969,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div
-        style={{
-          ...panelStyle,
-          marginTop: 30,
-        }}
-      >
+      <div style={{ ...panelStyle, marginTop: 4 }}>
         <div
           style={{
             display: "flex",
@@ -887,14 +980,15 @@ export default function Dashboard() {
           }}
         >
           <div>
-            <h2 style={{ margin: 0 }}>
+            <h2 style={{ margin: 0, color: "#0f172a" }}>
               Monthly Statistics
             </h2>
 
             <p
               style={{
-                color: "#6b7280",
+                color: "#64748b",
                 marginBottom: 0,
+                marginTop: 4,
               }}
             >
               Money moving in and out during the selected
@@ -918,9 +1012,11 @@ export default function Dashboard() {
               }
               style={{
                 padding: "10px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: 8,
+                border: "1px solid rgba(148, 163, 184, 0.35)",
+                borderRadius: 10,
                 fontWeight: 600,
+                background: "white",
+                color: "#0f172a",
               }}
             >
               {monthNames.map((month, index) => (
@@ -939,9 +1035,11 @@ export default function Dashboard() {
               }
               style={{
                 padding: "10px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: 8,
+                border: "1px solid rgba(148, 163, 184, 0.35)",
+                borderRadius: 10,
                 fontWeight: 600,
+                background: "white",
+                color: "#0f172a",
               }}
             >
               {availableYears.map((year) => (
@@ -953,16 +1051,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <h3 style={{ marginTop: 25 }}>
-          {monthNames[selectedMonth]} {selectedYear}
-        </h3>
-
         <div
           style={{
             display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 15,
+            gap: 14,
+            marginTop: 20,
           }}
         >
           <div
@@ -971,14 +1066,14 @@ export default function Dashboard() {
               background: "#f0fdf4",
             }}
           >
-            <div style={{ color: "#6b7280" }}>
+            <div style={{ color: "#64748b" }}>
               Total Money In
             </div>
 
             <strong
               style={{
                 display: "block",
-                fontSize: 25,
+                fontSize: 24,
                 marginTop: 7,
                 color: "#16a34a",
               }}
@@ -993,14 +1088,14 @@ export default function Dashboard() {
               background: "#fef2f2",
             }}
           >
-            <div style={{ color: "#6b7280" }}>
+            <div style={{ color: "#64748b" }}>
               Total Money Out
             </div>
 
             <strong
               style={{
                 display: "block",
-                fontSize: 25,
+                fontSize: 24,
                 marginTop: 7,
                 color: "#dc2626",
               }}
@@ -1018,14 +1113,14 @@ export default function Dashboard() {
                   : "#fff7ed",
             }}
           >
-            <div style={{ color: "#6b7280" }}>
+            <div style={{ color: "#64748b" }}>
               Net Cash Movement
             </div>
 
             <strong
               style={{
                 display: "block",
-                fontSize: 25,
+                fontSize: 24,
                 marginTop: 7,
                 color:
                   monthlyCashMovement >= 0
@@ -1046,14 +1141,14 @@ export default function Dashboard() {
                   : "#fef2f2",
             }}
           >
-            <div style={{ color: "#6b7280" }}>
+            <div style={{ color: "#64748b" }}>
               Trading Profit
             </div>
 
             <strong
               style={{
                 display: "block",
-                fontSize: 25,
+                fontSize: 24,
                 marginTop: 7,
                 color:
                   monthlyNetProfit >= 0
@@ -1071,34 +1166,30 @@ export default function Dashboard() {
             display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: 20,
-            marginTop: 20,
+            gap: 16,
+            marginTop: 16,
           }}
         >
           <div style={summaryBoxStyle}>
-            <h3 style={{ marginTop: 0 }}>
+            <h3 style={{ marginTop: 0, color: "#0f172a" }}>
               Money Received
             </h3>
 
             <div style={tableRowStyle}>
               <span>Vehicle sales</span>
-              <strong>
-                {formatYen(monthlyVehicleSales)}
-              </strong>
+              <strong>{formatYen(monthlyVehicleSales)}</strong>
             </div>
 
             <div style={tableRowStyle}>
               <span>Investor deposits</span>
-              <strong>
-                {formatYen(monthlyInvestorDeposits)}
-              </strong>
+              <strong>{formatYen(monthlyInvestorDeposits)}</strong>
             </div>
 
             <div
               style={{
                 ...tableRowStyle,
                 borderBottom: "none",
-                fontSize: 17,
+                fontSize: 15,
               }}
             >
               <strong>Total received</strong>
@@ -1109,36 +1200,30 @@ export default function Dashboard() {
           </div>
 
           <div style={summaryBoxStyle}>
-            <h3 style={{ marginTop: 0 }}>
+            <h3 style={{ marginTop: 0, color: "#0f172a" }}>
               Money Paid Out
             </h3>
 
             <div style={tableRowStyle}>
               <span>Vehicle purchases</span>
-              <strong>
-                {formatYen(monthlyVehiclePurchases)}
-              </strong>
+              <strong>{formatYen(monthlyVehiclePurchases)}</strong>
             </div>
 
             <div style={tableRowStyle}>
               <span>Vehicle expenses</span>
-              <strong>
-                {formatYen(monthlyExpenses)}
-              </strong>
+              <strong>{formatYen(monthlyExpenses)}</strong>
             </div>
 
             <div style={tableRowStyle}>
               <span>Investor capital returned</span>
-              <strong>
-                {formatYen(monthlyCapitalReturned)}
-              </strong>
+              <strong>{formatYen(monthlyCapitalReturned)}</strong>
             </div>
 
             <div
               style={{
                 ...tableRowStyle,
                 borderBottom: "none",
-                fontSize: 17,
+                fontSize: 15,
               }}
             >
               <strong>Total paid out</strong>
@@ -1152,11 +1237,11 @@ export default function Dashboard() {
         <div
           style={{
             ...summaryBoxStyle,
-            marginTop: 20,
+            marginTop: 16,
             background: "#fafafa",
           }}
         >
-          <h3 style={{ marginTop: 0 }}>
+          <h3 style={{ marginTop: 0, color: "#0f172a" }}>
             Monthly Profit Distribution
           </h3>
 
@@ -1167,23 +1252,17 @@ export default function Dashboard() {
 
           <div style={tableRowStyle}>
             <span>Total trading profit</span>
-            <strong>
-              {formatYen(monthlyNetProfit)}
-            </strong>
+            <strong>{formatYen(monthlyNetProfit)}</strong>
           </div>
 
           <div style={tableRowStyle}>
             <span>Business partner’s share</span>
-            <strong>
-              {formatYen(monthlyPartnerProfit)}
-            </strong>
+            <strong>{formatYen(monthlyPartnerProfit)}</strong>
           </div>
 
           <div style={tableRowStyle}>
             <span>Investors’ combined share</span>
-            <strong>
-              {formatYen(monthlyInvestorProfit)}
-            </strong>
+            <strong>{formatYen(monthlyInvestorProfit)}</strong>
           </div>
 
           <div
@@ -1204,8 +1283,8 @@ export default function Dashboard() {
             display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: 15,
-            marginTop: 20,
+            gap: 14,
+            marginTop: 16,
           }}
         >
           <div
@@ -1214,7 +1293,7 @@ export default function Dashboard() {
               background: "#eff6ff",
             }}
           >
-            <h3 style={{ marginTop: 0 }}>
+            <h3 style={{ marginTop: 0, color: "#0f172a" }}>
               Local Trading
             </h3>
 
@@ -1235,7 +1314,7 @@ export default function Dashboard() {
               background: "#f5f3ff",
             }}
           >
-            <h3 style={{ marginTop: 0 }}>
+            <h3 style={{ marginTop: 0, color: "#0f172a" }}>
               Export Trading
             </h3>
 
@@ -1252,46 +1331,34 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div
-        style={{
-          ...panelStyle,
-          marginTop: 30,
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>
+      <div style={{ ...panelStyle, marginTop: 4 }}>
+        <h2 style={{ marginTop: 0, color: "#0f172a" }}>
           Profit Distribution by Investor
         </h2>
 
-        <p style={{ color: "#6b7280" }}>
-          Separate lifetime and selected-month results
-          for every investor
+        <p style={{ color: "#64748b" }}>
+          Separate lifetime and selected-month results for every investor
         </p>
 
         {investorProfitSummaries.length === 0 ? (
-          <p>No investors have been added yet.</p>
+          <p style={{ color: "#334155" }}>No investors have been added yet.</p>
         ) : (
           investorProfitSummaries.map((summary) => {
             const localCapital =
-              getAvailableCapital(
-                summary.investor,
-                "Local"
-              );
+              getAvailableCapital(summary.investor, "Local");
 
             const exportCapital =
-              getAvailableCapital(
-                summary.investor,
-                "Export"
-              );
+              getAvailableCapital(summary.investor, "Export");
 
             return (
               <div
                 key={summary.investor.id}
                 style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 12,
+                  border: "1px solid rgba(148, 163, 184, 0.22)",
+                  borderRadius: 18,
                   padding: 18,
                   marginBottom: 16,
-                  background: "#fafafa",
+                  background: "rgba(255,255,255,0.9)",
                 }}
               >
                 <div
@@ -1304,12 +1371,7 @@ export default function Dashboard() {
                   }}
                 >
                   <div>
-                    <h3
-                      style={{
-                        marginTop: 0,
-                        marginBottom: 7,
-                      }}
-                    >
+                    <h3 style={{ marginTop: 0, marginBottom: 7, color: "#0f172a" }}>
                       {summary.investor.name}
                     </h3>
 
@@ -1317,28 +1379,18 @@ export default function Dashboard() {
                       style={{
                         background: "#ede9fe",
                         color: "#5b21b6",
-                        borderRadius: 20,
-                        padding: "5px 10px",
-                        fontSize: 14,
+                        borderRadius: 999,
+                        padding: "6px 10px",
+                        fontSize: 13,
                         fontWeight: 700,
                       }}
                     >
-                      {summary.investor.profitShare}% of
-                      your profit side
+                      {summary.investor.profitShare}% of your profit side
                     </span>
                   </div>
 
-                  <div
-                    style={{
-                      textAlign: "right",
-                    }}
-                  >
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        fontSize: 14,
-                      }}
-                    >
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ color: "#64748b", fontSize: 14 }}>
                       Total profit earned
                     </div>
 
@@ -1365,9 +1417,7 @@ export default function Dashboard() {
                   }}
                 >
                   <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      This month
-                    </div>
+                    <div style={{ color: "#64748b" }}>This month</div>
 
                     <strong
                       style={{
@@ -1380,21 +1430,13 @@ export default function Dashboard() {
                       {formatYen(summary.monthlyProfit)}
                     </strong>
 
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        marginTop: 5,
-                        fontSize: 14,
-                      }}
-                    >
+                    <div style={{ color: "#64748b", marginTop: 5, fontSize: 14 }}>
                       {summary.monthlyCars} vehicles
                     </div>
                   </div>
 
                   <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      Lifetime local profit
-                    </div>
+                    <div style={{ color: "#64748b" }}>Lifetime local profit</div>
 
                     <strong
                       style={{
@@ -1403,16 +1445,12 @@ export default function Dashboard() {
                         marginTop: 5,
                       }}
                     >
-                      {formatYen(
-                        summary.totalLocalProfit
-                      )}
+                      {formatYen(summary.totalLocalProfit)}
                     </strong>
                   </div>
 
                   <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      Lifetime export profit
-                    </div>
+                    <div style={{ color: "#64748b" }}>Lifetime export profit</div>
 
                     <strong
                       style={{
@@ -1421,16 +1459,12 @@ export default function Dashboard() {
                         marginTop: 5,
                       }}
                     >
-                      {formatYen(
-                        summary.totalExportProfit
-                      )}
+                      {formatYen(summary.totalExportProfit)}
                     </strong>
                   </div>
 
                   <div style={summaryBoxStyle}>
-                    <div style={{ color: "#6b7280" }}>
-                      Total vehicles
-                    </div>
+                    <div style={{ color: "#64748b" }}>Total vehicles</div>
 
                     <strong
                       style={{
@@ -1459,9 +1493,7 @@ export default function Dashboard() {
                       background: "#eff6ff",
                     }}
                   >
-                    <div style={{ color: "#6b7280" }}>
-                      Local capital available
-                    </div>
+                    <div style={{ color: "#64748b" }}>Local capital available</div>
 
                     <strong
                       style={{
@@ -1473,17 +1505,8 @@ export default function Dashboard() {
                       {formatYen(localCapital)}
                     </strong>
 
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        marginTop: 7,
-                        fontSize: 14,
-                      }}
-                    >
-                      Monthly local profit:{" "}
-                      {formatYen(
-                        summary.monthlyLocalProfit
-                      )}
+                    <div style={{ color: "#64748b", marginTop: 7, fontSize: 14 }}>
+                      Monthly local profit: {formatYen(summary.monthlyLocalProfit)}
                     </div>
                   </div>
 
@@ -1493,9 +1516,7 @@ export default function Dashboard() {
                       background: "#f5f3ff",
                     }}
                   >
-                    <div style={{ color: "#6b7280" }}>
-                      Export capital available
-                    </div>
+                    <div style={{ color: "#64748b" }}>Export capital available</div>
 
                     <strong
                       style={{
@@ -1507,17 +1528,8 @@ export default function Dashboard() {
                       {formatYen(exportCapital)}
                     </strong>
 
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        marginTop: 7,
-                        fontSize: 14,
-                      }}
-                    >
-                      Monthly export profit:{" "}
-                      {formatYen(
-                        summary.monthlyExportProfit
-                      )}
+                    <div style={{ color: "#64748b", marginTop: 7, fontSize: 14 }}>
+                      Monthly export profit: {formatYen(summary.monthlyExportProfit)}
                     </div>
                   </div>
                 </div>
@@ -1533,11 +1545,11 @@ export default function Dashboard() {
           gridTemplateColumns:
             "repeat(auto-fit, minmax(280px, 1fr))",
           gap: 20,
-          marginTop: 30,
+          marginTop: 4,
         }}
       >
         <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>
+          <h2 style={{ marginTop: 0, color: "#0f172a" }}>
             Inventory Status
           </h2>
 
@@ -1568,15 +1580,13 @@ export default function Dashboard() {
         </div>
 
         <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>
+          <h2 style={{ marginTop: 0, color: "#0f172a" }}>
             Expense Payments
           </h2>
 
           <div style={tableRowStyle}>
             <span>Paid by me</span>
-            <strong>
-              {formatYen(totalExpensesPaidByMe)}
-            </strong>
+            <strong>{formatYen(totalExpensesPaidByMe)}</strong>
           </div>
 
           <div
@@ -1586,23 +1596,19 @@ export default function Dashboard() {
             }}
           >
             <span>Paid by partner</span>
-            <strong>
-              {formatYen(
-                totalExpensesPaidByPartner
-              )}
-            </strong>
+            <strong>{formatYen(totalExpensesPaidByPartner)}</strong>
           </div>
         </div>
 
         <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>
+          <h2 style={{ marginTop: 0, color: "#0f172a" }}>
             Business Alerts
             {alertCount > 0 && (
               <span
                 style={{
                   background: "#dc2626",
                   color: "white",
-                  borderRadius: 20,
+                  borderRadius: 999,
                   padding: "3px 9px",
                   fontSize: 14,
                   marginLeft: 9,
@@ -1621,36 +1627,25 @@ export default function Dashboard() {
             <>
               {carsMissingPurchaseDate.length > 0 && (
                 <p>
-                  ⚠ Cars missing purchase dates:{" "}
-                  <strong>
-                    {carsMissingPurchaseDate.length}
-                  </strong>
+                  ⚠ Cars missing purchase dates: <strong>{carsMissingPurchaseDate.length}</strong>
                 </p>
               )}
 
               {soldCarsMissingSaleDate.length > 0 && (
                 <p>
-                  ⚠ Sold cars missing sale dates:{" "}
-                  <strong>
-                    {soldCarsMissingSaleDate.length}
-                  </strong>
+                  ⚠ Sold cars missing sale dates: <strong>{soldCarsMissingSaleDate.length}</strong>
                 </p>
               )}
 
-              {carsMissingBusinessType.length >
-                0 && (
+              {carsMissingBusinessType.length > 0 && (
                 <p>
-                  ⚠ Cars missing business type:{" "}
-                  <strong>
-                    {carsMissingBusinessType.length}
-                  </strong>
+                  ⚠ Cars missing business type: <strong>{carsMissingBusinessType.length}</strong>
                 </p>
               )}
 
               {oldStockCars.length > 0 && (
                 <p>
-                  ⚠ Cars held for more than 60 days:{" "}
-                  <strong>{oldStockCars.length}</strong>
+                  ⚠ Cars held for more than 60 days: <strong>{oldStockCars.length}</strong>
                 </p>
               )}
             </>

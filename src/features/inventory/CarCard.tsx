@@ -135,15 +135,15 @@ export default function CarCard({
     color: "white",
     border: "none",
     padding: "9px 13px",
-    borderRadius: 8,
+    borderRadius: 999,
     cursor: "pointer",
     fontWeight: 700,
   };
 
   const summaryBoxStyle = {
-    background: "#f9fafb",
-    border: "1px solid #e5e7eb",
-    borderRadius: 10,
+    background: "rgba(248, 250, 252, 0.96)",
+    border: "1px solid rgba(148, 163, 184, 0.22)",
+    borderRadius: 14,
     padding: 15,
   };
 
@@ -197,11 +197,12 @@ export default function CarCard({
   return (
     <article
       style={{
-        background: "white",
-        border: "1px solid #e5e7eb",
-        borderRadius: 15,
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.97) 100%)",
+        border: "1px solid rgba(148, 163, 184, 0.24)",
+        borderRadius: 20,
         marginBottom: 20,
-        boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+        boxShadow: "0 20px 55px -28px rgba(15, 23, 42, 0.32)",
         overflow: "hidden",
       }}
     >
@@ -225,6 +226,7 @@ export default function CarCard({
               style={{
                 marginTop: 0,
                 marginBottom: 10,
+                color: "#0f172a",
               }}
             >
               {car.year} {car.make} {car.model}
@@ -344,7 +346,7 @@ export default function CarCard({
               }
               style={{
                 ...buttonStyle,
-                background: "#111827",
+                background: "#0f172a",
               }}
             >
               {showDetails
@@ -510,8 +512,8 @@ export default function CarCard({
       {showDetails && (
         <div
           style={{
-            background: "#fafafa",
-            borderTop: "1px solid #e5e7eb",
+            background: "linear-gradient(180deg, rgba(248,250,252,0.9) 0%, rgba(241,245,249,0.92) 100%)",
+            borderTop: "1px solid rgba(148, 163, 184, 0.22)",
             padding: 22,
           }}
         >

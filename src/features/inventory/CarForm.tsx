@@ -381,17 +381,19 @@ export default function CarForm({
   const inputStyle = {
     width: "100%",
     boxSizing: "border-box" as const,
-    padding: 11,
-    border: "1px solid #d1d5db",
-    borderRadius: 8,
+    padding: 12,
+    border: "1px solid rgba(148, 163, 184, 0.35)",
+    borderRadius: 12,
     fontSize: 15,
+    background: "rgba(255,255,255,0.96)",
+    color: "#0f172a",
   };
 
   const labelStyle = {
     display: "block",
     marginBottom: 7,
     fontWeight: 700,
-    color: "#374151",
+    color: "#475569",
   };
 
   const fieldStyle = {
@@ -400,7 +402,7 @@ export default function CarForm({
 
   const buttonStyle = {
     border: "none",
-    borderRadius: 8,
+    borderRadius: 999,
     padding: "10px 15px",
     cursor: "pointer",
     fontWeight: 700,
@@ -409,14 +411,15 @@ export default function CarForm({
   return (
     <section
       style={{
-        background: "white",
-        border: "1px solid #e5e7eb",
-        borderRadius: 14,
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)",
+        border: "1px solid rgba(148, 163, 184, 0.24)",
+        borderRadius: 20,
         padding: 22,
-        boxShadow: "0 4px 14px rgba(0,0,0,0.07)",
+        boxShadow: "0 20px 50px -24px rgba(15, 23, 42, 0.28)",
       }}
     >
-      <h2 style={{ marginTop: 0 }}>
+      <h2 style={{ marginTop: 0, color: "#0f172a" }}>
         {editingCar ? "Edit Vehicle" : "Add Vehicle"}
       </h2>
 
@@ -696,7 +699,7 @@ export default function CarForm({
               capitalShortfall > 0
                 ? "1px solid #fecaca"
                 : "1px solid #ddd6fe",
-            borderRadius: 10,
+            borderRadius: 16,
             padding: 16,
             marginBottom: 18,
           }}
@@ -761,9 +764,10 @@ export default function CarForm({
       {form.status === "Sold" && (
         <section
           style={{
-            background: "#f9fafb",
-            border: "1px solid #e5e7eb",
-            borderRadius: 12,
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
+            border: "1px solid rgba(148, 163, 184, 0.24)",
+            borderRadius: 16,
             padding: 18,
             marginBottom: 18,
           }}
@@ -902,7 +906,7 @@ export default function CarForm({
               style={{
                 background: "#eff6ff",
                 border: "1px solid #bfdbfe",
-                borderRadius: 9,
+                borderRadius: 12,
                 padding: 13,
                 color: "#1e40af",
                 fontWeight: 700,

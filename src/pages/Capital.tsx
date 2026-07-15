@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 
+import type { Car } from "../types";
+
+import {
+  getInvestorAllocatedCapital,
+} from "../utils/finance";
+
 type InvestorShare = 25 | 50;
 
 type CapitalTransactionType = "Deposit" | "Return";
@@ -21,6 +27,24 @@ type Investor = {
   profitShare: InvestorShare;
   transactions: CapitalTransaction[];
 };
+
+function getSavedCars(): Car[] {
+  const savedCars = localStorage.getItem("cars");
+
+  if (!savedCars) {
+    return [];
+  }
+
+  try {
+    const parsedCars = JSON.parse(savedCars);
+
+    return Array.isArray(parsedCars)
+      ? parsedCars.filter(Boolean)
+      : [];
+  } catch {
+    return [];
+  }
+}
 
 function getSavedInvestors(): Investor[] {
   const savedInvestors = localStorage.getItem("investors");
@@ -128,9 +152,32 @@ function getAvailableCapital(
   );
 }
 
+function getRemainingCapital(
+  investor: Investor,
+  cars: Car[],
+  businessType?: BusinessType
+) {
+  const totalCapital = getAvailableCapital(
+    investor,
+    businessType
+  );
+
+  const allocatedCapital =
+    getInvestorAllocatedCapital(
+      investor.id,
+      cars,
+      businessType
+    );
+
+  return totalCapital - allocatedCapital;
+}
+
 export default function Capital() {
   const [investors, setInvestors] =
     useState<Investor[]>(getSavedInvestors);
+
+  const [cars] =
+    useState<Car[]>(getSavedCars);
 
   const [investorName, setInvestorName] = useState("");
 
@@ -297,8 +344,9 @@ export default function Capital() {
       );
 
       if (investor) {
-        const available = getAvailableCapital(
+        const available = getRemainingCapital(
           investor,
+          cars,
           businessType
         );
 
@@ -453,52 +501,100 @@ export default function Capital() {
     0
   );
 
+  const totalLocalCapital =
+    totalLocalDeposited - totalLocalReturned;
+
+  const totalExportCapital =
+    totalExportDeposited - totalExportReturned;
+
+  const totalLocalAllocated = investors.reduce(
+    (total, investor) =>
+      total +
+      getInvestorAllocatedCapital(
+        investor.id,
+        cars,
+        "Local"
+      ),
+    0
+  );
+
+  const totalExportAllocated = investors.reduce(
+    (total, investor) =>
+      total +
+      getInvestorAllocatedCapital(
+        investor.id,
+        cars,
+        "Export"
+      ),
+    0
+  );
+
   const totalLocalAvailable = investors.reduce(
     (total, investor) =>
-      total + getAvailableCapital(investor, "Local"),
+      total +
+      getRemainingCapital(
+        investor,
+        cars,
+        "Local"
+      ),
     0
   );
 
   const totalExportAvailable = investors.reduce(
     (total, investor) =>
-      total + getAvailableCapital(investor, "Export"),
+      total +
+      getRemainingCapital(
+        investor,
+        cars,
+        "Export"
+      ),
     0
   );
+
+  const totalCapital =
+    totalLocalCapital + totalExportCapital;
+
+  const totalAllocated =
+    totalLocalAllocated + totalExportAllocated;
 
   const totalAvailable =
     totalLocalAvailable + totalExportAvailable;
 
   const inputStyle = {
     width: "100%",
-    padding: 11,
+    padding: 12,
     marginBottom: 14,
     boxSizing: "border-box" as const,
-    border: "1px solid #d1d5db",
-    borderRadius: 8,
+    border: "1px solid rgba(148, 163, 184, 0.35)",
+    borderRadius: 12,
     fontSize: 15,
+    background: "rgba(255,255,255,0.96)",
+    color: "#0f172a",
   };
 
   const buttonStyle = {
     color: "white",
     border: "none",
     padding: "10px 14px",
-    borderRadius: 8,
+    borderRadius: 999,
     cursor: "pointer",
     fontWeight: 600,
   };
 
   const summaryBoxStyle = {
-    background: "white",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
     padding: 18,
-    borderRadius: 12,
+    borderRadius: 16,
     minWidth: 220,
     flex: 1,
-    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+    boxShadow: "0 16px 35px -24px rgba(15, 23, 42, 0.26)",
+    border: "1px solid rgba(148, 163, 184, 0.24)",
   };
 
   return (
     <div>
-      <h1 style={{ marginBottom: 5 }}>Capital</h1>
+      <h1 style={{ marginBottom: 5, color: "#0f172a" }}>Capital</h1>
 
       <p style={{ color: "#6b7280", marginTop: 0 }}>
         Manage investor capital for local and export business
@@ -506,12 +602,14 @@ export default function Capital() {
 
       <div
         style={{
-          background: "white",
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)",
           padding: 22,
-          borderRadius: 14,
-          maxWidth: 700,
+          borderRadius: 20,
+          maxWidth: 760,
           marginTop: 20,
-          boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+          boxShadow: "0 20px 50px -24px rgba(15, 23, 42, 0.28)",
+          border: "1px solid rgba(148, 163, 184, 0.24)",
         }}
       >
         <h2 style={{ marginTop: 0 }}>
@@ -597,9 +695,9 @@ export default function Capital() {
 
         <div
           style={{
-            background: "#f9fafb",
-            border: "1px solid #e5e7eb",
-            borderRadius: 10,
+            background: "rgba(248,250,252,0.95)",
+            border: "1px solid rgba(148, 163, 184, 0.24)",
+            borderRadius: 14,
             padding: 14,
             marginBottom: 18,
             color: "#4b5563",
@@ -656,7 +754,7 @@ export default function Capital() {
       >
         <div style={summaryBoxStyle}>
           <div style={{ color: "#6b7280" }}>
-            Local Capital Available
+            Local Remaining Capital
           </div>
 
           <div
@@ -676,7 +774,7 @@ export default function Capital() {
 
         <div style={summaryBoxStyle}>
           <div style={{ color: "#6b7280" }}>
-            Export Capital Available
+            Export Remaining Capital
           </div>
 
           <div
@@ -696,7 +794,7 @@ export default function Capital() {
 
         <div style={summaryBoxStyle}>
           <div style={{ color: "#6b7280" }}>
-            Total Capital Available
+            Total Remaining Capital
           </div>
 
           <div
@@ -707,6 +805,69 @@ export default function Capital() {
               color:
                 totalAvailable >= 0
                   ? "#2563eb"
+                  : "#dc2626",
+            }}
+          >
+            {formatYen(totalAvailable)}
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          gap: 20,
+          marginTop: 20,
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={summaryBoxStyle}>
+          <div style={{ color: "#6b7280" }}>
+            Total Investor Capital
+          </div>
+
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              marginTop: 8,
+              color: "#111827",
+            }}
+          >
+            {formatYen(totalCapital)}
+          </div>
+        </div>
+
+        <div style={summaryBoxStyle}>
+          <div style={{ color: "#6b7280" }}>
+            Capital Allocated to Cars
+          </div>
+
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              marginTop: 8,
+              color: "#ea580c",
+            }}
+          >
+            {formatYen(totalAllocated)}
+          </div>
+        </div>
+
+        <div style={summaryBoxStyle}>
+          <div style={{ color: "#6b7280" }}>
+            Capital Remaining
+          </div>
+
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              marginTop: 8,
+              color:
+                totalAvailable >= 0
+                  ? "#16a34a"
                   : "#dc2626",
             }}
           >
@@ -783,35 +944,35 @@ export default function Capital() {
           <p>No investors have been added yet.</p>
         ) : (
           investors.map((investor) => {
-            const localDeposits = getDeposits(
+            const localTotalCapital = getAvailableCapital(
               investor,
               "Local"
             );
 
-            const localReturns = getReturns(
-              investor,
-              "Local"
-            );
+            const localAllocated =
+              getInvestorAllocatedCapital(
+                investor.id,
+                cars,
+                "Local"
+              );
 
-            const localAvailable = getAvailableCapital(
-              investor,
-              "Local"
-            );
+            const localAvailable =
+              localTotalCapital - localAllocated;
 
-            const exportDeposits = getDeposits(
+            const exportTotalCapital = getAvailableCapital(
               investor,
               "Export"
             );
 
-            const exportReturns = getReturns(
-              investor,
-              "Export"
-            );
+            const exportAllocated =
+              getInvestorAllocatedCapital(
+                investor.id,
+                cars,
+                "Export"
+              );
 
-            const exportAvailable = getAvailableCapital(
-              investor,
-              "Export"
-            );
+            const exportAvailable =
+              exportTotalCapital - exportAllocated;
 
             const investorTotalAvailable =
               localAvailable + exportAvailable;
@@ -829,12 +990,12 @@ export default function Capital() {
               <div
                 key={investor.id}
                 style={{
-                  background: "white",
-                  borderRadius: 14,
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
+                  borderRadius: 20,
                   marginBottom: 18,
-                  boxShadow:
-                    "0 4px 14px rgba(0,0,0,0.08)",
-                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 20px 50px -24px rgba(15, 23, 42, 0.28)",
+                  border: "1px solid rgba(148, 163, 184, 0.24)",
                   overflow: "hidden",
                 }}
               >
@@ -938,7 +1099,7 @@ export default function Capital() {
                       }}
                     >
                       <div style={{ color: "#6b7280" }}>
-                        Local Capital
+                        Local Remaining Capital
                       </div>
 
                       <strong
@@ -962,7 +1123,7 @@ export default function Capital() {
                           fontSize: 13,
                         }}
                       >
-                        Deposited: {formatYen(localDeposits)}
+                        Total capital: {formatYen(localTotalCapital)}
                       </div>
 
                       <div
@@ -972,7 +1133,7 @@ export default function Capital() {
                           fontSize: 13,
                         }}
                       >
-                        Returned: {formatYen(localReturns)}
+                        Allocated: {formatYen(localAllocated)}
                       </div>
                     </div>
 
@@ -984,7 +1145,7 @@ export default function Capital() {
                       }}
                     >
                       <div style={{ color: "#6b7280" }}>
-                        Export Capital
+                        Export Remaining Capital
                       </div>
 
                       <strong
@@ -1008,7 +1169,7 @@ export default function Capital() {
                           fontSize: 13,
                         }}
                       >
-                        Deposited: {formatYen(exportDeposits)}
+                        Total capital: {formatYen(exportTotalCapital)}
                       </div>
 
                       <div
@@ -1018,7 +1179,7 @@ export default function Capital() {
                           fontSize: 13,
                         }}
                       >
-                        Returned: {formatYen(exportReturns)}
+                        Allocated: {formatYen(exportAllocated)}
                       </div>
                     </div>
 
@@ -1033,7 +1194,7 @@ export default function Capital() {
                       }}
                     >
                       <div style={{ color: "#6b7280" }}>
-                        Total Available
+                        Total Remaining
                       </div>
 
                       <strong
@@ -1057,8 +1218,9 @@ export default function Capital() {
                   <div
                     style={{
                       padding: 22,
-                      background: "#fafafa",
-                      borderTop: "1px solid #e5e7eb",
+                      background:
+                        "linear-gradient(180deg, rgba(248,250,252,0.9) 0%, rgba(241,245,249,0.92) 100%)",
+                      borderTop: "1px solid rgba(148, 163, 184, 0.22)",
                     }}
                   >
                     <button
@@ -1080,10 +1242,11 @@ export default function Capital() {
                       investor.id && (
                       <div
                         style={{
-                          background: "white",
+                          background:
+                            "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
                           border:
-                            "1px solid #e5e7eb",
-                          borderRadius: 11,
+                            "1px solid rgba(148, 163, 184, 0.24)",
+                          borderRadius: 16,
                           padding: 18,
                           marginBottom: 20,
                         }}
@@ -1347,10 +1510,11 @@ export default function Capital() {
                               gap: 15,
                               padding: 14,
                               marginBottom: 9,
-                              background: "white",
+                              background:
+                                "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
                               border:
-                                "1px solid #e5e7eb",
-                              borderRadius: 9,
+                                "1px solid rgba(148, 163, 184, 0.24)",
+                              borderRadius: 14,
                               flexWrap: "wrap",
                             }}
                           >

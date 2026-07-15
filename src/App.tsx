@@ -12,40 +12,104 @@ export default function App() {
     useState("dashboard");
 
   return (
-    <div>
-      <Navbar
-        currentPage={page}
-        onChangePage={setPage}
-      />
-
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 32%), linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%)",
+        padding: "24px 20px 40px",
+      }}
+    >
       <div
         style={{
-          padding: 30,
-          maxWidth: 1300,
+          maxWidth: 1380,
           margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
         }}
       >
-        {page === "dashboard" && (
-          <Dashboard />
-        )}
+        <Navbar
+          currentPage={page}
+          onChangePage={setPage}
+        />
 
-        {page === "cars" && <Cars />}
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(248,250,252,0.95) 100%)",
+            border: "1px solid rgba(15, 23, 42, 0.08)",
+            borderRadius: 28,
+            boxShadow: "0 24px 80px -30px rgba(15, 23, 42, 0.35)",
+            padding: "28px 24px 32px",
+            backdropFilter: "blur(18px)",
+          }}
+        >
+          {page === "dashboard" && (
+            <Dashboard />
+          )}
 
-        {page === "expenses" && (
-          <Expenses />
-        )}
+          {page === "cars" && <Cars />}
 
-        {page === "capital" && (
-          <Capital />
-        )}
+          {page === "expenses" && (
+            <Expenses />
+          )}
 
-        {page === "customers" && (
-          <Customers />
-        )}
+          {page === "capital" && (
+            <Capital />
+          )}
 
-        {page === "reports" && (
-          <h1>Reports — Coming Soon</h1>
-        )}
+          {page === "customers" && (
+            <Customers />
+          )}
+
+          {page === "reports" && (
+            <div
+              style={{
+                minHeight: 320,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  textAlign: "center",
+                  background: "rgba(248,250,252,0.92)",
+                  border: "1px solid rgba(148, 163, 184, 0.28)",
+                  borderRadius: 24,
+                  padding: "36px 42px",
+                  maxWidth: 600,
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-flex",
+                    padding: "8px 12px",
+                    borderRadius: 999,
+                    background: "rgba(37, 99, 235, 0.14)",
+                    color: "#2563eb",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    marginBottom: 14,
+                  }}
+                >
+                  Report hub
+                </div>
+
+                <h1 style={{ margin: 0, fontSize: 30 }}>
+                  Reports — Coming Soon
+                </h1>
+
+                <p style={{ color: "#64748b", marginTop: 10 }}>
+                  Advanced reporting views and export-ready summaries will appear here soon.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

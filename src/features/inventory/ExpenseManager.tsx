@@ -235,23 +235,25 @@ export default function ExpenseManager({
   const inputStyle = {
     width: "100%",
     boxSizing: "border-box" as const,
-    padding: 11,
-    border: "1px solid #d1d5db",
-    borderRadius: 8,
+    padding: 12,
+    border: "1px solid rgba(148, 163, 184, 0.35)",
+    borderRadius: 12,
     fontSize: 15,
     marginBottom: 14,
+    background: "rgba(255,255,255,0.96)",
+    color: "#0f172a",
   };
 
   const labelStyle = {
     display: "block",
     marginBottom: 7,
     fontWeight: 700,
-    color: "#374151",
+    color: "#475569",
   };
 
   const buttonStyle = {
     border: "none",
-    borderRadius: 8,
+    borderRadius: 999,
     padding: "9px 13px",
     cursor: "pointer",
     fontWeight: 700,
@@ -331,7 +333,7 @@ export default function ExpenseManager({
         <div
           style={{
             ...summaryBoxStyle,
-            background: "#f3f4f6",
+            background: "rgba(248,250,252,0.96)",
           }}
         >
           <div
@@ -408,10 +410,11 @@ export default function ExpenseManager({
 
       <div
         style={{
-          background: "#f9fafb",
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
           border:
-            "1px solid #e5e7eb",
-          borderRadius: 12,
+            "1px solid rgba(148, 163, 184, 0.24)",
+          borderRadius: 16,
           padding: 18,
         }}
       >
@@ -676,10 +679,11 @@ export default function ExpenseManager({
               <div
                 key={expense.id}
                 style={{
-                  background: "#f9fafb",
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)",
                   border:
-                    "1px solid #e5e7eb",
-                  borderRadius: 10,
+                    "1px solid rgba(148, 163, 184, 0.24)",
+                  borderRadius: 14,
                   padding: 15,
                   marginBottom: 10,
                   display: "flex",
