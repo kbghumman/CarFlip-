@@ -22,8 +22,12 @@ import { supabase } from "./utils/supabase";
 
 import {
   clearCloudSessionCache,
+  getSyncStatus,
   hydrateAppStateFromCloud,
+  subscribeToSyncStatus,
 } from "./utils/cloudStorage";
+
+import type { SyncStatus } from "./utils/cloudStorage";
 
 export default function App() {
   const [page, setPage] =
@@ -40,6 +44,9 @@ export default function App() {
 
   const [cloudError, setCloudError] =
     useState("");
+
+  const [syncStatus, setSyncStatus] =
+    useState<SyncStatus>(() => getSyncStatus());
 
   const [email, setEmail] =
     useState("");
@@ -128,6 +135,10 @@ export default function App() {
 
       authListener.subscription.unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    return subscribeToSyncStatus(setSyncStatus);
   }, []);
 
   async function handleLogin(
@@ -485,23 +496,85 @@ export default function App() {
             </strong>
           </div>
 
-          <button
-            type="button"
-            onClick={handleSignOut}
+          <div
             style={{
-              border:
-                "1px solid rgba(148,163,184,0.45)",
-              borderRadius: 10,
-              padding: "9px 13px",
-              background:
-                "rgba(255,255,255,0.82)",
-              color: "#334155",
-              cursor: "pointer",
-              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              flexWrap: "wrap",
             }}
           >
-            Sign Out
-          </button>
+            <div
+              aria-live="polite"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                borderRadius: 999,
+                padding: "9px 13px",
+                border:
+                  syncStatus === "saved"
+                    ? "1px solid #bbf7d0"
+                    : syncStatus === "saving"
+                      ? "1px solid #fde68a"
+                      : "1px solid #fecaca",
+                background:
+                  syncStatus === "saved"
+                    ? "#f0fdf4"
+                    : syncStatus === "saving"
+                      ? "#fffbeb"
+                      : "#fef2f2",
+                color:
+                  syncStatus === "saved"
+                    ? "#166534"
+                    : syncStatus === "saving"
+                      ? "#92400e"
+                      : "#991b1b",
+                fontSize: 14,
+                fontWeight: 800,
+              }}
+            >
+              <span
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: "50%",
+                  background:
+                    syncStatus === "saved"
+                      ? "#22c55e"
+                      : syncStatus === "saving"
+                        ? "#f59e0b"
+                        : "#ef4444",
+                }}
+              />
+
+              {syncStatus === "saved"
+                ? "All changes saved"
+                : syncStatus === "saving"
+                  ? "Saving changes..."
+                  : syncStatus === "offline"
+                    ? "Offline — changes pending"
+                    : "Save failed — will retry"}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleSignOut}
+              style={{
+                border:
+                  "1px solid rgba(148,163,184,0.45)",
+                borderRadius: 10,
+                padding: "9px 13px",
+                background:
+                  "rgba(255,255,255,0.82)",
+                color: "#334155",
+                cursor: "pointer",
+                fontWeight: 700,
+              }}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         {cloudError && (

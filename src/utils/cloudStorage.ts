@@ -12,6 +12,39 @@ const LAST_SYNCED_CARS_KEY = "wildspeed_last_synced_cars";
 const LAST_SYNCED_INVESTORS_KEY = "wildspeed_last_synced_investors";
 const PENDING_SYNC_KEY = "wildspeed_direct_sync_pending";
 
+export type SyncStatus = "saved" | "saving" | "error" | "offline";
+
+const SYNC_STATUS_EVENT = "wildspeed-sync-status";
+let currentSyncStatus: SyncStatus =
+  navigator.onLine ? "saved" : "offline";
+
+function setSyncStatus(status: SyncStatus) {
+  currentSyncStatus = status;
+  window.dispatchEvent(
+    new CustomEvent<SyncStatus>(SYNC_STATUS_EVENT, {
+      detail: status,
+    })
+  );
+}
+
+export function getSyncStatus() {
+  return currentSyncStatus;
+}
+
+export function subscribeToSyncStatus(
+  listener: (status: SyncStatus) => void
+) {
+  const handler = (event: Event) => {
+    listener((event as CustomEvent<SyncStatus>).detail);
+  };
+
+  window.addEventListener(SYNC_STATUS_EVENT, handler);
+
+  return () => {
+    window.removeEventListener(SYNC_STATUS_EVENT, handler);
+  };
+}
+
 let syncQueue: Promise<void> = Promise.resolve();
 
 function readArray<T>(key: string): T[] {
@@ -284,12 +317,25 @@ async function performDirectSync() {
 
 export function syncAppStateToCloud() {
   localStorage.setItem(PENDING_SYNC_KEY, "true");
+
+  if (!navigator.onLine) {
+    setSyncStatus("offline");
+    return Promise.resolve();
+  }
+
+  setSyncStatus("saving");
+
   syncQueue = syncQueue
     .then(performDirectSync)
+    .then(() => {
+      setSyncStatus("saved");
+    })
     .catch((error) => {
       console.error("Direct Supabase save failed:", error);
       localStorage.setItem(PENDING_SYNC_KEY, "true");
+      setSyncStatus(navigator.onLine ? "error" : "offline");
     });
+
   return syncQueue;
 }
 
@@ -422,10 +468,22 @@ export async function hydrateAppStateFromCloud() {
   writeArray(INVESTORS_STORAGE_KEY, direct.investors);
   writeArray(LAST_SYNCED_CARS_KEY, direct.cars);
   writeArray(LAST_SYNCED_INVESTORS_KEY, direct.investors);
+  setSyncStatus(navigator.onLine ? "saved" : "offline");
 }
 
 export async function flushCloudSync() {
   await syncAppStateToCloud();
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("online", () => {
+    setSyncStatus("saving");
+    void syncAppStateToCloud();
+  });
+
+  window.addEventListener("offline", () => {
+    setSyncStatus("offline");
+  });
 }
 
 export async function clearCloudSessionCache() {
